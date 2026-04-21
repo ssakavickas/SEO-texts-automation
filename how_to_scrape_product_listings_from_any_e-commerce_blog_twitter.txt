@@ -1,0 +1,6 @@
+Most scrapers break the week after you build them.
+New CSS class. Cloudflare. React storefront.
+
+Here is how to build one that actually holds up.
+
+Read the full guide: scrapebadger.com

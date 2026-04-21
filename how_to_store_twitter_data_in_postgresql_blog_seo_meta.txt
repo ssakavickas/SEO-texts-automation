@@ -1,0 +1,3 @@
+Primary Keyword: twitter data
+Meta Title: How to Store Twitter Data in PostgreSQL
+Meta Description: Learn how to store Twitter data in PostgreSQL with schema design, deduplication, and ingestion pipelines. Build a scalable setup that handles millions of tweets.

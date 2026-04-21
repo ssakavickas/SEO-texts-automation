@@ -1,0 +1,7 @@
+Manual price tracking breaks the moment you scale it.
+
+Automated scraping breaks if you build it wrong.
+
+Here is how to do it right.
+
+Read the full guide: scrapebadger.com

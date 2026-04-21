@@ -1,0 +1,3 @@
+Primary Keyword: price tracking bot
+Meta Title: How to Build a Price Tracking Bot in Python
+Meta Description: Learn how to build a price tracking bot that scrapes prices, stores history, detects drops, and sends Slack alerts. A complete Python guide for any scale.

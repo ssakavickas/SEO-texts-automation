@@ -1,0 +1,7 @@
+Polling loops are not real-time pipelines. They are scheduled guesses.
+
+- Filter Rules push tweets in milliseconds, not on a cron schedule
+- WebSocket for live apps, Webhooks for reliable backend delivery
+- Deduplicate with tweet_id or delivery ID to stay clean at scale
+
+Read the full guide: scrapebadger.com

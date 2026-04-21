@@ -1,0 +1,15 @@
+Most teams think they need Twitter's official API to track competitors. They don't.
+
+The Pro API costs $5,000 per month. The signals you actually need cost a fraction of that — or nothing at all.
+
+Here is what competitive Twitter intelligence actually looks like in practice:
+
+- Content patterns reveal what is working in your market before you waste budget testing it yourself
+- Follower velocity and recent followers show which audiences competitors are winning right now
+- Real-time monitoring catches product launches and strategic moves 10-15 days before quarterly reports surface them
+
+The method you choose depends on your team, not your ambition. Free tools like TweetDeck handle casual monitoring. Scraping APIs and stream webhooks handle automated, scalable tracking. No-code tools like n8n bridge the gap for non-technical teams.
+
+The full breakdown, including code examples and a comparison table, is at scrapebadger.com
+
+What signals do you track when monitoring competitors on social media, and how do you decide when the data is actually worth acting on?

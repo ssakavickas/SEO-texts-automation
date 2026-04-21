@@ -1,0 +1,6 @@
+Keyword search tells you what people are saying.
+Timeline scraping tells you what a specific account has said for years.
+
+Different tool. Different question. Most people only know one of them.
+
+Read the full guide: scrapebadger.com

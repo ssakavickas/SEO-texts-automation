@@ -1,0 +1,5 @@
+Exporting Twitter data by hand every week is just wasted time with extra steps.
+
+There are four ways to automate it into Google Sheets, from zero code to fully custom.
+
+Read the full guide: scrapebadger.com

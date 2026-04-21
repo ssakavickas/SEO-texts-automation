@@ -1,0 +1,17 @@
+Most startups treat Twitter as a broadcast channel. The ones quietly building pipeline from it are doing something different.
+
+They are listening before they post.
+
+Twitter's public-by-default conversations mean buyers openly announce what they need in real time. "Anyone recommend a CRM for a 10-person team?" is a warmer lead than anything on a cold email list. The signal exists. The problem is catching it at scale.
+
+Here is what the best-performing monitoring setups have in common:
+
+- They track three distinct intent signals: high-intent (actively seeking a solution), medium-intent (frustrated but not searching yet), and research-stage signals
+- They use Boolean search operators and filter rules to eliminate noise from day one, not as an afterthought
+- They automate delivery via webhooks so the right person sees a lead within minutes, not hours
+
+Response timing is everything. High-intent tweets attract replies within 30 to 60 minutes. After that, the conversation moves on and your reply gets buried.
+
+Read the full guide on building this system: scrapebadger.com
+
+Are you using Twitter as a lead source right now, or is it purely a content channel for your team? Would love to hear how others are approaching this.

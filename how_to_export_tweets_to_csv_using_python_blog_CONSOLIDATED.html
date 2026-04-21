@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <title>Blog Post Package</title>
+    
+<style>
+    body { 
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+        line-height: 1.6; 
+        max-width: 800px; 
+        margin: 40px auto; 
+        padding: 0 20px; 
+        color: #333; 
+    }
+    h1, h2, h3 { 
+        color: #111; 
+        margin-top: 1.5em; 
+        text-transform: uppercase; 
+        letter-spacing: 0.5px; 
+        border-bottom: 2px solid #2D6A4F;
+        padding-bottom: 5px;
+    }
+    pre { 
+        background-color: #1e1e1e; 
+        color: #d4d4d4; 
+        padding: 16px; 
+        border-radius: 6px; 
+        overflow-x: auto; 
+        font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace; 
+        font-size: 14px; 
+        margin: 20px 0;
+    }
+    code { 
+        font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace; 
+    }
+    p code {
+        background-color: #f6f8fa; 
+        padding: 0.2em 0.4em; 
+        border-radius: 3px; 
+        font-size: 85%;
+        color: #2D6A4F;
+    }
+    table {
+        border-collapse: collapse;
+        width: 100%;
+        margin: 20px 0;
+    }
+    th, td {
+        border: 1px solid #ddd;
+        padding: 12px;
+        text-align: left;
+    }
+    th {
+        background-color: #f8f9fa;
+    }
+</style>
+
+</head>
+<body>
+    <h1>Blog Post Package</h1>
+<h2>SEO Metadata</h2>
+<p>Primary Keyword: export tweets to CSV Python
+Meta Title: How to Export Tweets to CSV Using Python
+Meta Description: Learn how to export tweets to CSV in Python with pagination, deduplication, and atomic writes. A complete guide for clean, reliable Twitter data exports.</p>
+<hr />
+<h2>LinkedIn Post</h2>
+<p>Most Python tutorials show you how to get tweets into a file. They skip everything that matters at scale.</p>
+<p>Pagination gaps, schema inconsistency, duplicate rows, partial writes — these are the failure modes that turn a "working" script into a liability the moment you need reliable data.</p>
+<p>Here is what a production-ready tweet export pipeline actually requires:</p>
+<ul>
+<li>Proper pagination so you do not silently miss half your dataset</li>
+<li>A normalized, fixed schema with safe defaults for every missing field</li>
+<li>Deduplication by tweet ID so your downstream analysis starts clean</li>
+<li>Atomic CSV writes so a mid-run crash never corrupts your output file</li>
+</ul>
+<p>This is not a three-line script. It is a small, disciplined pipeline — and the difference shows the moment you need to run it again tomorrow.</p>
+<p>Read the full implementation guide: scrapebadger.com</p>
+<p>What is the biggest pain point you have hit when exporting API data to CSV — schema drift, duplicates, or something else entirely?</p>
+<hr />
+<h2>Twitter Thread</h2>
+<p>Most tweet export scripts break the moment you scale them.</p>
+<ul>
+<li>Pagination gaps silently drop half your data</li>
+<li>Nested fields crash without safe defaults</li>
+<li>No atomic writes means corrupt CSVs on failure</li>
+</ul>
+<p>Read the full guide: scrapebadger.com</p>
+<hr />
+<h2>Blog Cover Image</h2>
+<p><img alt="Cover Image" src="how_to_export_tweets_to_csv_using_python_blog_cover.png" /></p>
+<hr />
+<h1>How to Export Tweets to CSV Using Python</h1>
+<p>Most tutorials on this topic show you how to get a few tweets into a file. They skip the parts that matter: what happens when you need 5,000 rows, when fields are missing, when the same tweet shows up twice, or when your script runs again tomorrow and overwrites yesterday's data.</p>
+<p>This guide covers all of it. By the end, you'll have a Python script that searches Twitter by keyword, paginates through results, normalizes each tweet into a consistent schema, deduplicates by ID, and writes a clean CSV — atomically, so partial writes don't corrupt your output.</p>
+<h2>Why Exporting Tweets to CSV Is Harder Than It Looks</h2>
+<p>The naive version is three lines: call an API, loop over results, write rows. That works exactly once.</p>
+<p>The real problems show up when you try to run the same script tomorrow, increase the volume, or hand the CSV off to someone who expects consistent columns. The failure modes are predictable:</p>
+<ul>
+<li><strong>Pagination gaps.</strong> Twitter search returns results in batches. If you don't paginate, you get a partial dataset that looks complete. Nothing crashes. You just quietly miss half the tweets.</li>
+<li><strong>Schema inconsistency.</strong> Fields like <code>public_metrics</code>, <code>user</code>, and <code>created_at</code> can be missing, null, or nested differently across tweets. If your code assumes a fixed structure, it will either crash or write malformed rows.</li>
+<li><strong>Duplicates.</strong> Overlapping pages and re-runs create duplicate rows. Without deduplication, your downstream analysis is wrong before it starts.</li>
+<li><strong>Partial writes.</strong> If the script fails mid-run, you get a half-written CSV. The next run either overwrites it or appends garbage.</li>
+</ul>
+<p>Each of these is solvable. The key is treating CSV export as a small pipeline — not a one-off script.</p>
+<h2>What We're Building</h2>
+<p>A Python script that:</p>
+<ol>
+<li>Takes a keyword or query as input</li>
+<li>Calls the <a href="https://scrapebadger.com/docs/twitter/tweets">ScrapeBadger Twitter search API</a> with pagination</li>
+<li>Normalizes each tweet into a flat, stable schema</li>
+<li>Deduplicates by tweet ID</li>
+<li>Writes to CSV atomically (temp file → rename)</li>
+</ol>
+<p>The output is a file you can open in Excel, load into Pandas, import into a database, or hand to a non-technical analyst without needing to explain anything.</p>
+<h2>Step 1: Set Up Your Environment</h2>
+<p>Keep this project isolated so dependencies don't bleed into other scripts.</p>
+<pre><code class="language-bash">mkdir tweet-csv-export
+cd tweet-csv-export
+python -m venv .venv
+source .venv/bin/activate  # macOS/Linux
+# .venv\Scripts\activate   # Windows
+</code></pre>
+<p>Install dependencies:</p>
+<pre><code class="language-bash">pip install requests
+pip freeze &gt; requirements.txt
+</code></pre>
+<p>Set your API key as an environment variable. Never hardcode it:</p>
+<pre><code class="language-bash">export SCRAPEBADGER_API_KEY=&quot;sb_live_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx&quot;
+</code></pre>
+<p>Windows (PowerShell):</p>
+<pre><code class="language-powershell">$env:SCRAPEBADGER_API_KEY=&quot;sb_live_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx&quot;
+</code></pre>
+<p>Quick sanity check:</p>
+<pre><code class="language-bash">python -c &quot;import os; print('ok' if os.getenv('SCRAPEBADGER_API_KEY') else 'MISSING')&quot;
+</code></pre>
+<p>Create the output folder:</p>
+<pre><code class="language-bash">mkdir -p output
+</code></pre>
+<h2>Step 2: Understand the Schema Before You Write Code</h2>
+<p>Before writing a single row, decide exactly what columns the CSV will have. This schema is a contract. Every run must produce the same columns in the same order, with safe defaults when fields are missing.</p>
+<p>The schema I use for keyword exports:</p>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Source</th>
+<th>Default if missing</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>tweet_id</code></td>
+<td><code>tweet["id"]</code></td>
+<td><code>""</code></td>
+</tr>
+<tr>
+<td><code>created_at</code></td>
+<td><code>tweet["created_at"]</code></td>
+<td><code>""</code></td>
+</tr>
+<tr>
+<td><code>username</code></td>
+<td><code>tweet["user"]["username"]</code></td>
+<td><code>""</code></td>
+</tr>
+<tr>
+<td><code>text</code></td>
+<td><code>tweet["text"]</code></td>
+<td><code>""</code></td>
+</tr>
+<tr>
+<td><code>like_count</code></td>
+<td><code>tweet["public_metrics"]["like_count"]</code></td>
+<td><code>0</code></td>
+</tr>
+<tr>
+<td><code>retweet_count</code></td>
+<td><code>tweet["public_metrics"]["retweet_count"]</code></td>
+<td><code>0</code></td>
+</tr>
+<tr>
+<td><code>reply_count</code></td>
+<td><code>tweet["public_metrics"]["reply_count"]</code></td>
+<td><code>0</code></td>
+</tr>
+</tbody>
+</table>
+<p>Keep it narrow at first. You can always add columns. Removing them breaks downstream consumers.</p>
+<h2>Step 3: Fetch Tweets with Pagination</h2>
+<p>The <a href="https://scrapebadger.com/docs/twitter/tweets">ScrapeBadger advanced search endpoint</a> is <code>GET /v1/twitter/tweets/advanced_search</code>. It supports keyword queries, advanced operators like <code>from:username</code>, and filtering by type (<code>Top</code>, <code>Latest</code>, <code>Media</code>).</p>
+<p>Results are paginated. Each response includes a cursor for the next page. You loop until you hit your item limit or run out of pages.</p>
+<pre><code class="language-python">import os
+import time
+import requests
+
+API_KEY = os.getenv(&quot;SCRAPEBADGER_API_KEY&quot;)
+if not API_KEY:
+    raise RuntimeError(&quot;Missing SCRAPEBADGER_API_KEY&quot;)
+
+HEADERS = {&quot;x-api-key&quot;: API_KEY}
+BASE_URL = &quot;https://api.scrapebadger.com/v1/twitter/tweets/advanced_search&quot;
+
+def fetch_all_tweets(query: str, max_items: int = 500, result_type: str = &quot;Latest&quot;) -&gt; list[dict]:
+    &quot;&quot;&quot;
+    Paginates through search results and returns a flat list of raw tweet dicts.
+    Stops when max_items is reached or no more pages are available.
+    &quot;&quot;&quot;
+    collected = []
+    cursor = None
+
+    while len(collected) &lt; max_items:
+        params = {&quot;query&quot;: query, &quot;type&quot;: result_type}
+        if cursor:
+            params[&quot;cursor&quot;] = cursor
+
+        response = requests.get(BASE_URL, headers=HEADERS, params=params, timeout=30)
+
+        # Handle common auth/credit errors
+        if response.status_code == 401:
+            raise RuntimeError(&quot;Invalid or missing API key&quot;)
+        if response.status_code == 402:
+            raise RuntimeError(&quot;Insufficient credits&quot;)
+        response.raise_for_status()
+
+        data = response.json()
+        tweets = data.get(&quot;data&quot;) or []
+
+        if not tweets:
+            break  # No more results
+
+        collected.extend(tweets)
+
+        # Respect rate limit: 180 requests / 15 minutes
+        cursor = data.get(&quot;next_cursor&quot;)
+        if not cursor:
+            break
+
+        time.sleep(0.5)  # Polite pause between pages
+
+    return collected[:max_items]
+</code></pre>
+<p>The <code>time.sleep(0.5)</code> is a polite buffer between pages. The <a href="https://scrapebadger.com/docs/authentication">ScrapeBadger API</a> allows <span style="color: #2D6A4F; font-weight: bold;">180 requests per 15 minutes</span> on tweet endpoints. For most exports, you won't hit that limit, but the sleep adds stability on larger jobs.</p>
+<h2>Step 4: Normalize and Deduplicate</h2>
+<p>Raw tweet payloads are good for APIs. They're annoying for spreadsheets. Normalization flattens nested fields into a stable, flat dictionary. Deduplication ensures each tweet ID appears exactly once.</p>
+<pre><code class="language-python">def normalize(tweet: dict) -&gt; dict:
+    &quot;&quot;&quot;
+    Flatten a raw tweet payload into a stable, flat schema.
+    All fields have safe defaults — this function should never raise.
+    &quot;&quot;&quot;
+    metrics = tweet.get(&quot;public_metrics&quot;) or {}
+    user = tweet.get(&quot;user&quot;) or {}
+
+    return {
+        &quot;tweet_id&quot;:     str(tweet.get(&quot;id&quot;) or &quot;&quot;),
+        &quot;created_at&quot;:   str(tweet.get(&quot;created_at&quot;) or &quot;&quot;),
+        &quot;username&quot;:     str(user.get(&quot;username&quot;) or &quot;&quot;),
+        &quot;text&quot;:         str(tweet.get(&quot;text&quot;) or &quot;&quot;).replace(&quot;\n&quot;, &quot; &quot;),
+        &quot;like_count&quot;:   int(metrics.get(&quot;like_count&quot;) or 0),
+        &quot;retweet_count&quot;: int(metrics.get(&quot;retweet_count&quot;) or 0),
+        &quot;reply_count&quot;:  int(metrics.get(&quot;reply_count&quot;) or 0),
+    }
+</code></pre>
+<p>The <code>replace("\n", " ")</code> on the text field matters. Newlines inside tweet text will break CSV parsers that aren't expecting them. Remove or replace them before writing.</p>
+<h2>Step 5: Write to CSV Atomically</h2>
+<p>Atomic writes prevent partial CSVs. The pattern: write to a <code>.tmp</code> file first, then rename it to the final path. If the script crashes mid-write, the original file is untouched.</p>
+<pre><code class="language-python">import csv
+import os
+
+CSV_COLUMNS = [
+    &quot;tweet_id&quot;, &quot;created_at&quot;, &quot;username&quot;, &quot;text&quot;,
+    &quot;like_count&quot;, &quot;retweet_count&quot;, &quot;reply_count&quot;,
+]
+
+def export_to_csv(raw_tweets: list[dict], out_path: str) -&gt; int:
+    &quot;&quot;&quot;
+    Normalizes, deduplicates, and writes tweets to CSV.
+    Returns the count of rows written.
+    &quot;&quot;&quot;
+    seen_ids: set[str] = set()
+    rows = []
+
+    for raw in raw_tweets:
+        row = normalize(raw)
+
+        if not row[&quot;tweet_id&quot;]:
+            continue  # Skip tweets with no ID
+
+        if row[&quot;tweet_id&quot;] in seen_ids:
+            continue  # Skip duplicates
+
+        seen_ids.add(row[&quot;tweet_id&quot;])
+        rows.append(row)
+
+    tmp_path = out_path + &quot;.tmp&quot;
+    with open(tmp_path, &quot;w&quot;, newline=&quot;&quot;, encoding=&quot;utf-8&quot;) as f:
+        writer = csv.DictWriter(f, fieldnames=CSV_COLUMNS)
+        writer.writeheader()
+        writer.writerows(rows)
+
+    os.replace(tmp_path, out_path)  # Atomic rename
+    return len(rows)
+</code></pre>
+<h2>Step 6: Wire It Together</h2>
+<pre><code class="language-python">import sys
+
+def main(query: str, max_items: int = 500, out_path: str = &quot;output/tweets.csv&quot;):
+    print(f&quot;Fetching up to {max_items} tweets for query: '{query}'&quot;)
+    raw_tweets = fetch_all_tweets(query, max_items=max_items)
+    print(f&quot;Fetched {len(raw_tweets)} raw tweets&quot;)
+
+    count = export_to_csv(raw_tweets, out_path)
+    print(f&quot;Wrote {count} unique tweets to {out_path}&quot;)
+
+if __name__ == &quot;__main__&quot;:
+    if len(sys.argv) &lt; 2:
+        print(&quot;Usage: python export_tweets.py &lt;query&gt; [max_items]&quot;)
+        sys.exit(1)
+
+    keyword = sys.argv[1]
+    limit = int(sys.argv[2]) if len(sys.argv) &gt; 2 else 500
+    main(keyword, max_items=limit)
+</code></pre>
+<p>Run it:</p>
+<pre><code class="language-bash">python export_tweets.py &quot;python scraping&quot; 1000
+</code></pre>
+<p>Expected output:</p>
+<pre><code>Fetching up to 1000 tweets for query: 'python scraping'
+Fetched 1000 raw tweets
+Wrote 987 unique tweets to output/tweets.csv
+</code></pre>
+<p>The difference between <code>1000</code> fetched and <code>987</code> written is duplicates dropped — which is exactly what you want.</p>
+<h2>Exporting a Specific User's Tweets</h2>
+<p>The same pipeline works for a specific account. Use the <code>from:username</code> operator with the advanced search endpoint:</p>
+<pre><code class="language-python">main(&quot;from:elonmusk&quot;, max_items=200, out_path=&quot;output/elon_tweets.csv&quot;)
+</code></pre>
+<blockquote>
+<p><strong>Note on shadow-bans:</strong> If <code>from:username</code> returns few or no results for an account you know is active, that account may be shadow-banned. You can verify at <code>https://x.com/search?q=from%3AUSERNAME&amp;src=typed_query&amp;f=live</code>.</p>
+</blockquote>
+<h2>Batch Exporting by Tweet ID</h2>
+<p>If you already have a list of tweet IDs (from a prior collection job, or from another dataset), the <a href="https://scrapebadger.com/docs/twitter/tweets">batch tweet endpoint</a> — <code>GET /v1/twitter/tweets/</code> — lets you fetch multiple tweets in a single request. It's more efficient than calling the single-tweet endpoint <code>GET /v1/twitter/tweets/tweet/{id}</code> in a loop.</p>
+<p>This is useful for enrichment workflows: collect IDs first, then pull full metadata for all of them in one pass.</p>
+<h2>What Good Output Looks Like</h2>
+<p>After a successful run, verify:</p>
+<ul>
+<li><strong>Stable headers.</strong> Same column names and order every run.</li>
+<li><strong>No empty <code>tweet_id</code> values.</strong> If you see blank IDs, something went wrong upstream.</li>
+<li><strong>No duplicate <code>tweet_id</code> values.</strong> Run <code>sort tweet_id | uniq -d</code> to check.</li>
+<li><strong>No broken encoding.</strong> Open in Excel or a hex editor if you're working with non-Latin characters.</li>
+</ul>
+<p>If you're loading into Pandas later:</p>
+<pre><code class="language-python">import pandas as pd
+df = pd.read_csv(&quot;output/tweets.csv&quot;, dtype={&quot;tweet_id&quot;: str})
+print(df.shape)
+print(df[&quot;tweet_id&quot;].nunique())  # Should match row count
+</code></pre>
+<p>Treat <code>tweet_id</code> as a string when reading. Pandas will silently truncate large integer IDs if you let it infer the type.</p>
+<h2>Common Failure Modes</h2>
+<table>
+<thead>
+<tr>
+<th>Symptom</th>
+<th>Likely Cause</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CSV has only headers</td>
+<td>Query returned no results</td>
+<td>Broaden the query, check auth</td>
+</tr>
+<tr>
+<td>Duplicate rows</td>
+<td>Pagination overlap or re-run</td>
+<td>Dedupe by <code>tweet_id</code> (in-memory or DB)</td>
+</tr>
+<tr>
+<td>Partial/corrupt CSV</td>
+<td>Script crashed mid-write</td>
+<td>Use atomic write pattern (tmp → rename)</td>
+</tr>
+<tr>
+<td>Missing fields in rows</td>
+<td>Null nested fields in API response</td>
+<td>Use <code>or {}</code> and safe defaults in <code>normalize()</code></td>
+</tr>
+<tr>
+<td><code>401</code> error</td>
+<td>Invalid API key</td>
+<td>Verify <code>SCRAPEBADGER_API_KEY</code> env variable</td>
+</tr>
+<tr>
+<td><code>402</code> error</td>
+<td>Credits exhausted</td>
+<td>Check credit balance in dashboard</td>
+</tr>
+<tr>
+<td>Text breaks CSV formatting</td>
+<td>Newlines in tweet text</td>
+<td>Strip or replace <code>\n</code> before writing</td>
+</tr>
+</tbody>
+</table>
+<h2>Scaling Up: When to Move Beyond CSV</h2>
+<p>CSV works well up to a few hundred thousand rows. Past that, you'll want to consider:</p>
+<ul>
+<li><strong>SQLite with upsert by <code>tweet_id</code>.</strong> Same deduplication logic, but persistent across runs without loading everything into memory.</li>
+<li><strong>PostgreSQL</strong> if you need concurrent access or complex queries.</li>
+<li><strong>Incremental checkpointing.</strong> Store the last-seen tweet ID and use it as a <code>since_id</code> parameter on the next run, so you only collect new tweets instead of re-fetching everything.</li>
+</ul>
+<p>If you're building something more continuous — monitoring a topic over weeks rather than one-off exports — the architecture in <a href="https://scrapebadger.com/blog/how_to_build_a_real-time_twitter_monitoring_pipeli">How to Build a Real-Time Twitter Monitoring Pipeline</a> covers the incremental approach in detail.</p>
+<hr />
+<h2>FAQ</h2>
+<p><strong>How do I export tweets to CSV in Python?</strong></p>
+<p>Call a Twitter search API (like <a href="https://scrapebadger.com/docs/twitter/tweets">ScrapeBadger's advanced search endpoint</a>), paginate through results, flatten each tweet into a consistent row schema using a <code>normalize()</code> function, deduplicate by <code>tweet_id</code>, and write to a CSV file using Python's built-in <code>csv.DictWriter</code>. The key is writing to a <code>.tmp</code> file first and renaming atomically so you don't end up with partial output if the script fails mid-run.</p>
+<p><strong>Why do I get duplicate tweets in my CSV?</strong></p>
+<p>Pagination responses can overlap — the same tweet can appear on page 3 and page 4 of a result set. Deduplicate by treating <code>tweet_id</code> as a primary key and using a <code>seen_ids</code> set in memory. For multi-run jobs, persist seen IDs in a database or checkpoint file so re-runs don't reintroduce duplicates.</p>
+<p><strong>How many tweets can I export in one run?</strong></p>
+<p>That depends on your API rate limits and how you scope the job. The <a href="https://scrapebadger.com/docs/twitter/tweets">ScrapeBadger Twitter endpoints</a> allow <span style="color: #2D6A4F; font-weight: bold;">180 requests per 15 minutes</span>, and each request returns a page of results. For most one-off exports, a limit of 500–2,000 tweets per run is practical. For larger recurring jobs, run smaller batches on a schedule rather than one giant unbounded pull.</p>
+<p><strong>Can I export tweets from a specific user to CSV?</strong></p>
+<p>Yes. Use the <code>from:username</code> operator in the query parameter: <code>query=from:elonmusk</code>. The same pagination and normalization logic applies. If the query returns fewer results than expected for an active account, check whether that account is shadow-banned by searching `https://x.com/search?q=from%3AUSERNAME&amp;</p>
+</body>
+</html>

@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <title><h2>SEO Metadata</h2></title>
+    
+<style>
+    body { 
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+        line-height: 1.6; 
+        max-width: 800px; 
+        margin: 40px auto; 
+        padding: 0 20px; 
+        color: #333; 
+    }
+    h1, h2, h3 { 
+        color: #111; 
+        margin-top: 1.5em; 
+        text-transform: uppercase; 
+        letter-spacing: 0.5px; 
+        border-bottom: 2px solid #2D6A4F;
+        padding-bottom: 5px;
+    }
+    pre { 
+        background-color: #1e1e1e; 
+        color: #d4d4d4; 
+        padding: 16px; 
+        border-radius: 6px; 
+        overflow-x: auto; 
+        font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace; 
+        font-size: 14px; 
+        margin: 20px 0;
+    }
+    code { 
+        font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace; 
+    }
+    p code {
+        background-color: #f6f8fa; 
+        padding: 0.2em 0.4em; 
+        border-radius: 3px; 
+        font-size: 85%;
+        color: #2D6A4F;
+    }
+    table {
+        border-collapse: collapse;
+        width: 100%;
+        margin: 20px 0;
+    }
+    th, td {
+        border: 1px solid #ddd;
+        padding: 12px;
+        text-align: left;
+    }
+    th {
+        background-color: #f8f9fa;
+    }
+</style>
+
+</head>
+<body>
+    <h2>SEO Metadata</h2>
+<p>Primary Keyword: twitter monitoring
+Meta Title: Real-Time Twitter Monitoring vs. Batch Scraping
+Meta Description: Not sure whether to use twitter monitoring or batch scraping? Learn exactly when each approach wins, how to cut costs, and which setup fits your workflow.</p>
+<hr />
+<h2>LinkedIn Post</h2>
+<p>Most teams choose real-time monitoring because it sounds more serious. Batch scraping sounds like the boring option. So they default to continuous streams, pay for infrastructure they do not need, and end up with an overbuilt pipeline doing the work of a scheduled job.</p>
+<p>The actual question is not which approach is more sophisticated. It is whether the value of your data degrades meaningfully if it arrives an hour late.</p>
+<p>If the answer is no, batch scraping wins. It is cheaper, simpler, and easier to maintain. Historical analysis, periodic reporting, dataset construction, exploratory research — none of these need a live feed. They need a clean, well-structured pull.</p>
+<p>Real-time monitoring earns its cost when the delay has real consequences. A brand mention with a closing response window. A competitor announcement you need to catch the moment it posts. A keyword that should trigger a downstream workflow immediately. These are not cases where "fresher would be nice" — they are cases where timing directly affects the outcome.</p>
+<p>The smarter move most teams eventually land on is a tiered hybrid: aggressive polling intervals for your most time-sensitive queries, standard or relaxed intervals for broader tracking, and batch calls for everything analytical. Running all your rules at the fastest interval because freshness feels better is how a modest monitoring setup quietly becomes an expensive one.</p>
+<p>Match the tool to the urgency. Not the other way around.</p>
+<p>Full breakdown of when each approach wins, how the cost tiers work, and how to build the hybrid pattern: scrapebadger.com</p>
+<hr />
+<h2>Twitter Thread</h2>
+<p>Real-time monitoring sounds better.
+Batch scraping sounds boring.
+So teams overspend on infrastructure they do not need.</p>
+<p>The only question that matters: what does it cost you if data arrives an hour late?</p>
+<p>Read the full guide: scrapebadger.com</p>
+<hr />
+<h2>Blog Cover Image</h2>
+<p><img alt="Cover Image" src="/Users/milijonierius/Desktop/Domo workflow/real-time_monitoring_vs_batch_scraping_when_each_w_blog_cover.png" /></p>
+<hr />
+<h1>Real-Time Monitoring vs. Batch Scraping: When Each One Actually Wins</h1>
+<p>Most teams pick their data collection strategy based on what sounds right, not what their use case actually needs. Real-time monitoring sounds impressive. Batch scraping sounds boring. So people default to real-time, pay for infrastructure they don't need, and wonder why their pipeline feels overbuilt for what it's doing.</p>
+<p>The decision isn't about which approach is better. It's about what your workflow actually requires — specifically, how much it costs you when data arrives late.</p>
+<h2>The Core Difference</h2>
+<p>Before getting into when each approach wins, it helps to be precise about what these terms mean in the context of Twitter data.</p>
+<p><strong>Batch scraping</strong> is pull-based and scheduled. You run a job, collect tweets matching a query or timeline, process them, and store the results. The job might run hourly, daily, or on demand. Between runs, nothing happens.</p>
+<p><strong>Real-time monitoring</strong> is continuous. A rule or monitor runs in the background, polls on a short interval, and delivers matching tweets to a webhook or WebSocket connection as they appear. You don't initiate the fetch — the system does it for you, automatically.</p>
+<p>The confusion happens because both approaches use similar technical foundations. You're still querying Twitter data either way. What differs is the trigger model, the data freshness, and the cost structure.</p>
+<table>
+<thead>
+<tr>
+<th>Factor</th>
+<th>Batch Scraping</th>
+<th>Real-Time Monitoring</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Trigger</td>
+<td>You initiate the request</td>
+<td>Continuous, automatic</td>
+</tr>
+<tr>
+<td>Data freshness</td>
+<td>Point-in-time snapshot</td>
+<td>Near-real-time delivery</td>
+</tr>
+<tr>
+<td>Latency</td>
+<td>Minutes to hours</td>
+<td>Milliseconds to seconds</td>
+</tr>
+<tr>
+<td>Engineering effort</td>
+<td>Low (simple API call)</td>
+<td>Low-to-medium (webhook setup)</td>
+</tr>
+<tr>
+<td>Cost</td>
+<td>Per request</td>
+<td>Per rule or account, per day</td>
+</tr>
+<tr>
+<td>Best for</td>
+<td>Historical analysis, dataset builds</td>
+<td>Alerts, live event tracking, brand mentions</td>
+</tr>
+</tbody>
+</table>
+<h2>When Batch Scraping Wins</h2>
+<p>Batch scraping is the right default for most Twitter data workflows. It's simpler, cheaper, and easier to debug. The job runs on a schedule, processes a bounded dataset, and writes output to wherever you need it. If something breaks, you rerun the job.</p>
+<p>The use cases where batch clearly wins:</p>
+<p><strong>Historical analysis and dataset builds.</strong> If you're pulling 10,000 tweets for a research project, training a classifier, or analyzing a campaign after the fact, real-time delivery adds zero value. You want a large, clean dataset collected efficiently — not a stream of individual tweet events delivered as they occurred. See the guide on <a href="https://scrapebadger.com/blog/how-to-build-a-twitter-dataset-for-machine-learning">how to build a Twitter dataset for machine learning</a> for a practical example of this pattern.</p>
+<p><strong>Periodic reporting.</strong> Weekly summaries of keyword volume, monthly engagement reports, trend analysis over a rolling window — all of this works fine with scheduled batch pulls. The business question doesn't require minute-by-minute data.</p>
+<p><strong>Exploratory work and prototyping.</strong> When you're figuring out whether a keyword has enough signal to be worth monitoring, batch first. Pull a sample, look at what you get, decide if it's worth building something more persistent.</p>
+<p><strong>Cost-constrained pipelines.</strong> Batch requests are priced per request. Real-time monitoring is priced per rule per day, with costs scaling significantly with polling frequency. For many workloads, batch is an order of magnitude cheaper.</p>
+<p>The practical decision rule: if the value of the data doesn't meaningfully degrade over a few hours, you don't need real-time.</p>
+<h2>When Real-Time Monitoring Wins</h2>
+<p>Real-time monitoring wins when the time between an event happening and you knowing about it has actual consequences. Not "it would be nice to know sooner" — actual consequences, like a missed response window, a PR situation that escalated unchecked, or a lead who got picked up by a competitor.</p>
+<p>The use cases where real-time clearly wins:</p>
+<p><strong>Brand mention alerts.</strong> Someone tweets about a bug in your product. A founder posts about switching away from your tool. A journalist is asking for comments on a story. These have a response window — and that window closes fast. Getting the alert 15 minutes later matters. Getting it the next morning doesn't.</p>
+<p><strong>Live event tracking.</strong> A product launch, a conference, a breaking news cycle. Twitter moves fast during live events, and the signal-to-noise ratio peaks quickly before decaying. You need to catch the relevant mentions as they happen, not in a batch export that runs after the event is over.</p>
+<p><strong>Keyword-triggered workflows.</strong> If a specific phrase appears on Twitter and that should trigger something downstream — a Slack alert, a CRM update, a support ticket — you need the delivery to be near-immediate. Batch pipelines that run hourly don't support this.</p>
+<p><strong>Watching specific accounts.</strong> Tracking a competitor's announcement feed, a regulator's public statements, or a key partner's communications. These aren't keyword queries — they're account-level watchers where you want notification the moment something posts.</p>
+<h2>How ScrapeBadger Implements Both</h2>
+<p>This is where it gets concrete. ScrapeBadger's streaming layer provides two distinct tools that map directly to the real-time vs. batch spectrum.</p>
+<h3>Stream Monitors (Account-Level Watching)</h3>
+<p><a href="https://docs.scrapebadger.com/twitter-streams/monitors">Stream Monitors</a> are designed for watching specific Twitter accounts and receiving their tweets in real-time. You create a monitor with up to 100 accounts, specify which tweet types to filter for (original, reply, retweet, quote), and configure a webhook URL or WebSocket connection for delivery.</p>
+<pre><code class="language-bash">curl -X POST &quot;https://scrapebadger.com/v1/twitter/stream/monitors&quot; \
+  -H &quot;x-api-key: YOUR_API_KEY&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d '{
+    &quot;name&quot;: &quot;Competitor Watch&quot;,
+    &quot;usernames&quot;: [&quot;competitorA&quot;, &quot;competitorB&quot;],
+    &quot;webhook_url&quot;: &quot;https://example.com/webhooks/tweets&quot;,
+    &quot;filter_types&quot;: [&quot;original&quot;]
+  }'
+</code></pre>
+<p>Pricing scales by account volume, from <span style="color: #2D6A4F; font-weight: bold;">1,667 credits/account/day</span> for 1–10 accounts down to <span style="color: #2D6A4F; font-weight: bold;">833 credits/account/day</span> at enterprise scale. Monitors auto-pause if credits run low — something worth building a check around if this is running in production.</p>
+<h3>Filter Rules (Keyword and Query Monitoring)</h3>
+<p><a href="https://docs.scrapebadger.com/twitter-streams/filter-rules">Filter Rules</a> are for tracking search queries: keywords, hashtags, advanced query syntax. Each rule polls independently at a configurable interval and delivers matching tweets via webhook or WebSocket. Automatic deduplication means you never receive the same tweet twice across polls — no extra logic needed on your end.</p>
+<pre><code class="language-bash">curl -X POST &quot;https://scrapebadger.com/v1/twitter/stream/filter-rules&quot; \
+  -H &quot;x-api-key: YOUR_API_KEY&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d '{
+    &quot;tag&quot;: &quot;Brand Mentions&quot;,
+    &quot;query&quot;: &quot;\&quot;your-product\&quot; -is:retweet lang:en&quot;,
+    &quot;interval_seconds&quot;: 60,
+    &quot;webhook_url&quot;: &quot;https://example.com/webhooks/tweets&quot;
+  }'
+</code></pre>
+<p>The interval pricing tiers make the real-time vs. batch tradeoff explicit:</p>
+<table>
+<thead>
+<tr>
+<th>Tier</th>
+<th>Polling Interval</th>
+<th>Credits/Rule/Day</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Turbo</td>
+<td>0.5s</td>
+<td>30,000</td>
+</tr>
+<tr>
+<td>Fast</td>
+<td>5s</td>
+<td>10,000</td>
+</tr>
+<tr>
+<td>Standard</td>
+<td>60s</td>
+<td>1,500</td>
+</tr>
+<tr>
+<td>Relaxed</td>
+<td>600s (10 min)</td>
+<td>500</td>
+</tr>
+<tr>
+<td>Daily</td>
+<td>86,400s (24h)</td>
+<td>100</td>
+</tr>
+</tbody>
+</table>
+<p>Turbo costs <span style="color: #2D6A4F; font-weight: bold;">300×</span> more per day than Daily. That gap is the cost of urgency. If a 10-minute delay is acceptable for a given keyword, using Relaxed instead of Fast saves <span style="color: #2D6A4F; font-weight: bold;">95%</span> of the per-rule daily cost. Most teams don't need every keyword running at the same interval — match the polling frequency to the actual response requirement.</p>
+<p>Before going live, you can validate query syntax against the <a href="https://docs.scrapebadger.com/twitter-streams/filter-rules"><code>/v1/twitter/stream/filter-rules/validate</code></a> endpoint to catch errors before they affect a live rule.</p>
+<h2>The Hybrid Pattern (What Most Teams Actually Run)</h2>
+<p>The false choice is "real-time or batch." Most production setups use both, assigned by urgency tier.</p>
+<p>A typical split:</p>
+<ul>
+<li><strong>Turbo or Fast interval</strong> for brand name mentions and product alerts — anything with a real response window</li>
+<li><strong>Standard or Relaxed interval</strong> for competitor keyword tracking, industry hashtags, broader topic queries</li>
+<li><strong>Daily interval or batch API calls</strong> for analytics, historical pulls, dataset construction, periodic reporting</li>
+</ul>
+<p>Running all your rules at Turbo because "fresher is better" is how you turn a $30/month Twitter monitoring setup into a $300/month one, for no operational benefit on the queries that don't need it.</p>
+<p>If you're evaluating the right approach for your use case, <a href="https://scrapebadger.com/blog/twitter-monitoring-vs-twitter-scraping-whats-the-difference">Twitter Monitoring vs. Twitter Scraping: What's the Difference</a> goes deeper on the push vs. pull model distinction.</p>
+<h2>A Few Gotchas Worth Knowing</h2>
+<p>Shadow-banned accounts won't return results in Stream Monitors. Before setting up a monitor on a specific account, verify it's visible in live search: <code>https://x.com/search?q=from:USERNAME&amp;src=typed_query&amp;f=live</code>.</p>
+<p>Both monitors and filter rules auto-pause when credits run low (<code>status_reason: "insufficient_credits"</code>). If this is part of a critical alerting pipeline, add a health check that pings on successful runs and alerts when output drops to zero unexpectedly.</p>
+<p>Filter Rules deduplicate across polls automatically, but Batch API calls don't. If you're running scheduled batch jobs and re-querying overlapping time windows, deduplication by tweet ID is your responsibility.</p>
+<hr />
+<h2>FAQ</h2>
+<p><strong>What's the simplest way to decide between real-time monitoring and batch scraping?</strong></p>
+<p>Ask one question: what's the cost of receiving this data one hour late? If the answer is "nothing important changes," use batch. If the answer involves a missed alert, a delayed response, or a window that closes, use real-time monitoring.</p>
+<p><strong>Can I use both real-time and batch in the same pipeline?</strong></p>
+<p>Yes, and most teams should. The practical pattern is to run real-time monitoring on your most time-sensitive keywords and accounts, and use batch API calls for everything else — historical pulls, analytics, periodic exports. These aren't competing approaches; they serve different parts of the same workflow.</p>
+<p><strong>How do I pick the right polling interval for a Filter Rule?</strong></p>
+<p>Match the interval to your actual response requirement. If you'd respond to a brand mention within 5 minutes, Standard (60s) is more than sufficient and costs a fraction of Fast or Turbo. Reserve shorter intervals for workflows where a 10-second vs. 60-second delay genuinely matters to an outcome.</p>
+<p><strong>Does ScrapeBadger deduplicate tweets in real-time monitoring?</strong></p>
+<p>Yes, Filter Rules automatically deduplicate across polls — the same tweet won't be delivered twice. For batch API calls, deduplication is handled client-side, typically by treating tweet ID as a primary key.</p>
+<p><strong>What happens if my monitor or filter rule runs out of credits?</strong></p>
+<p>Both monitors and filter rules auto-pause with <code>status_reason: "insufficient_credits"</code>. For production alerting pipelines, treat this as a failure mode worth monitoring explicitly — a silent pause looks identical to a quiet period until you're missing data.</p>
+<p><strong>Can I test a Filter Rule query before going live?</strong></p>
+<p>Yes. The <a href="https://docs.scrapebadger.com/twitter-streams/filter-rules"><code>/v1/twitter/stream/filter-rules/validate</code></a> endpoint lets you test query syntax before creating a live rule. Useful for catching Advanced Search syntax errors that would otherwise silently return zero results.</p>
+<p><strong>Is real-time monitoring more expensive than batch for Twitter data?</strong></p>
+<p>It depends on the interval. The Daily pricing tier for Filter Rules costs 100 credits/rule/day — comparable to a modest batch workflow. The Turbo tier at 30,000 credits/rule/day is a different cost category entirely. Batch requests are typically cheaper for infrequent, high-volume pulls. Real-time monitoring at aggressive intervals is more expensive but delivers continuous delivery without you having to manage scheduling.</p>
+</body>
+</html>

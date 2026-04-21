@@ -1,0 +1,7 @@
+You do not need a $5,000/month API to track competitors on Twitter.
+
+- Free: TweetDeck + private lists for 3-5 accounts
+- Scalable: scraping APIs for automated trend data
+- Real-time: stream monitors that fire webhooks on every post
+
+Read the full guide: scrapebadger.com

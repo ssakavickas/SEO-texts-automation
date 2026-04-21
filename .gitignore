@@ -1,0 +1,32 @@
+# Sensitive files
+.env
+credentials.json
+token.json
+anthropic_key.txt
+*_key.txt
+*.key
+
+# Temporary and generated files
+.tmp/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.db
+.ipynb_checkpoints
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Virtual environments
+venv/
+env/
+.venv/
+
+# Large media (optional, but recommended for generated blog assets if they are many)
+# If these are permanent assets, comment the line below
+*.png
+*.jpg
+*.jpeg
+*.gif

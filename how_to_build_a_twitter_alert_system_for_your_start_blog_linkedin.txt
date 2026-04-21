@@ -1,0 +1,13 @@
+Most founders find out about critical Twitter conversations days too late. A mention, a competitor complaint, a buying signal — gone cold before you ever saw it.
+
+A real-time Twitter alert system solves this. Here is what you need to know to build one that actually works:
+
+- Define tight, specific queries from day one. Broad queries create noise. Start narrow, then expand as you learn what is actually actionable.
+- Use event-driven Filter Rules, not polling. Push-based alerts notify you the moment a match is detected — no scheduling, no delays, no missed windows.
+- Route alerts to where your team already works. Slack, a database, or a CRM. The webhook handler is your integration point.
+
+Most startup teams overlook the highest-value signals: lead intent queries, competitor complaints, and market trend keywords. These are not just brand mentions — they are live buying signals with a short window to act.
+
+Read the full step-by-step guide: scrapebadger.com
+
+What signals are you currently monitoring for your startup, and how are you capturing them? Drop your setup in the comments.

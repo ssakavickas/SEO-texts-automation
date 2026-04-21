@@ -1,0 +1,17 @@
+Most teams pick the wrong tool for Twitter data collection. Then they wonder why their "monitoring" keeps missing things.
+
+Twitter scraping and Twitter monitoring are not the same thing. Using one when you need the other creates real blind spots.
+
+Here is what actually separates them:
+
+- Scraping is a pull model. You request data on demand. Best for historical analysis, batch jobs, and one-time dataset builds.
+- Monitoring is a push model. Rules run continuously in the background and deliver data to you the moment something matches.
+- The cost structure is different too. Scraping bills per request. Monitoring bills per account or rule, per day.
+
+The most common mistake is building a scheduled scraper and calling it a monitoring system. Between every run, you are completely blind. A tweet can go viral, trigger a PR issue, or spark a thread before your next pull ever fires.
+
+If timing matters, you need a proper monitoring setup with webhook delivery. Not a tighter cron schedule.
+
+Read the full breakdown: scrapebadger.com
+
+Which approach is your team currently using for Twitter data, and has it created any gaps you have had to work around?

@@ -1,0 +1,15 @@
+Most data workflows are just manual labor wearing a suit.
+
+Someone exports a CSV, pastes it into a spreadsheet, cleans up the columns, and repeats the whole thing next week. For Twitter monitoring and reporting, this is almost always unnecessary.
+
+A properly built pipeline pulls tweet data into Google Sheets automatically, on a schedule, without anyone touching it. The interesting part is that "properly built" means different things depending on who's doing the building.
+
+No-code tools like IFTTT and Make can get you running in under 10 minutes. Google Sheets add-ons like Apipheny let you call an API directly without writing a single line. n8n gives you visual workflow logic with real pagination control. And Google Apps Script gives developers full ownership over schema, deduplication, and error handling.
+
+The choice matters. IFTTT is fine for casual monitoring. It is not fine when you need reliable scheduling, clean column structure, or any kind of deduplication. Running a script that silently fails and writes duplicate rows into a report that stakeholders trust is a real problem, and it is a common one.
+
+A few things trip people up regardless of approach: tweet IDs are 18-19 digits and Google Sheets rounds them, which breaks deduplication entirely. Scheduled runs fail silently unless you build alerting in. And API credits disappear faster than expected when you are pulling multiple keywords frequently.
+
+The setup is not complicated. The thinking behind it matters more than the code.
+
+Full breakdown with working examples: scrapebadger.com

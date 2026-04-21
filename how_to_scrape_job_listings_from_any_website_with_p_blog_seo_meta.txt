@@ -1,0 +1,3 @@
+Primary Keyword: scrape job listings
+Meta Title: How to Scrape Job Listings with Python
+Meta Description: Learn how to scrape job listings from static and dynamic sites using Python. Covers pagination, deduplication, anti-bot tips, and reliable data export.

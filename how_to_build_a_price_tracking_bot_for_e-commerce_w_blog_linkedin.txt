@@ -1,0 +1,17 @@
+Most price tracking tutorials stop at "print the price to terminal." That's not a bot. That's a demo.
+
+A real price tracking system has four distinct jobs: fetch data on a schedule, store it with timestamps, detect meaningful changes, and alert you when something is actually worth acting on. Most hobby scripts collapse these into one tangled mess, which is exactly why they break the moment a site updates a CSS class or starts rendering prices via JavaScript.
+
+The architecture matters more than the code. Keep the scraping layer, storage layer, change detector, and alerting layer separate. That separation is what lets you swap BeautifulSoup for a scraping API without rewriting your alert logic. It's what lets you scale from 10 products to 10,000 without starting over.
+
+A few things worth knowing before you build:
+
+SQLite is enough for most projects. No server, no configuration, handles hundreds of thousands of records without complaint.
+
+Comparing price drops against yesterday's price creates false positives. Use the earliest recorded price as your baseline.
+
+The most dangerous failure mode is a silent one. The scraper runs, no errors appear, but the data is stale. Build monitoring around your monitoring.
+
+And past around 500 products across multiple retailers, maintaining a DIY scraper becomes more expensive than just paying for a scraping API. The math shifts faster than most people expect.
+
+The full guide, including working Python code for all four layers, is at scrapebadger.com

@@ -1,0 +1,13 @@
+Most Twitter scraping projects focus on keywords and timelines. That is a mistake.
+
+The original tweet is just the headline. The replies are where the real information lives — the complaints, the recommendations, the unfiltered reactions that people never bother turning into a proper post. If you are doing brand monitoring, competitor research, or building training data for NLP, and you are not collecting reply threads, you are working with a fraction of the actual signal.
+
+The reason replies get ignored is structural. A conversation is a tree, not a list. One tweet can have hundreds of direct replies, each with their own replies, branching several levels deep. Most scraping setups treat everything as flat data and lose the conversational context entirely.
+
+The fix is straightforward once you understand the data model. Two fields matter most: `conversation_id`, which always points to the root of the thread, and `in_reply_to_tweet_id`, which gives you the direct parent. Keep both, and you can reconstruct the full thread structure after collection.
+
+For most use cases, a search-based batch approach using `conversation_id` queries is the right starting point. It is predictable, handles pagination cleanly, and gives you complete coverage of any conversation thread you point it at.
+
+The full guide covers the data structure, three collection methods, a complete Python pipeline with deduplication and CSV export, common failure modes, and what reply data is actually worth collecting at scale.
+
+Read it at scrapebadger.com

@@ -1,0 +1,7 @@
+Most teams find trends after they peak. Here is how to get there first.
+
+- Measure velocity, not volume
+- Use streaming rules to catch spikes before trending lists catch up
+- Filter retweets and bots or your alerts are noise
+
+Read the full guide: scrapebadger.com

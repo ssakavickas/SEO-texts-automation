@@ -1,0 +1,15 @@
+Most social listening setups are monitoring the wrong layer of Twitter.
+
+Everyone tracks keywords, brand mentions, and hashtag trends in the main feed. Meanwhile, the most focused, high-signal conversations on the platform are happening inside Twitter Communities — and most monitoring tools either ignore them entirely or treat them like regular tweets.
+
+They are not the same thing.
+
+A keyword search for "machine learning" returns millions of tweets, most of them noise. The same topic inside a focused ML Community has already been self-selected by people who actually care. Lower volume, far higher relevance. That difference matters enormously if you are trying to understand what a specific audience is actually thinking.
+
+The challenge is that Communities are not easy to monitor systematically. There is no native data feed, most enterprise tools only offer partial coverage, and the ones with meaningful access sit at enterprise pricing. For teams that need persistent storage, cross-Community analysis, or custom alerting, a scraping API pipeline is usually the most practical path.
+
+What I found interesting building this out: raw post volume is almost meaningless as a signal. What matters is the pattern. A Community that suddenly generates three times its normal reply count in 24 hours is telling you something — a viral discussion, an announcement, or a conflict worth paying attention to.
+
+If you are already running any kind of Twitter monitoring and not looking at Communities, you are likely missing the most engaged segment of the conversations you care about.
+
+Full breakdown of approaches, tooling, and how to build a pipeline that holds up: scrapebadger.com

@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <title><h2>SEO Metadata</h2></title>
+    
+<style>
+    body { 
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+        line-height: 1.6; 
+        max-width: 800px; 
+        margin: 40px auto; 
+        padding: 0 20px; 
+        color: #333; 
+    }
+    h1, h2, h3 { 
+        color: #111; 
+        margin-top: 1.5em; 
+        text-transform: uppercase; 
+        letter-spacing: 0.5px; 
+        border-bottom: 2px solid #2D6A4F;
+        padding-bottom: 5px;
+    }
+    pre { 
+        background-color: #1e1e1e; 
+        color: #d4d4d4; 
+        padding: 16px; 
+        border-radius: 6px; 
+        overflow-x: auto; 
+        font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace; 
+        font-size: 14px; 
+        margin: 20px 0;
+    }
+    code { 
+        font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace; 
+    }
+    p code {
+        background-color: #f6f8fa; 
+        padding: 0.2em 0.4em; 
+        border-radius: 3px; 
+        font-size: 85%;
+        color: #2D6A4F;
+    }
+    table {
+        border-collapse: collapse;
+        width: 100%;
+        margin: 20px 0;
+    }
+    th, td {
+        border: 1px solid #ddd;
+        padding: 12px;
+        text-align: left;
+    }
+    th {
+        background-color: #f8f9fa;
+    }
+</style>
+
+</head>
+<body>
+    <h2>SEO Metadata</h2>
+<p>Primary Keyword: price tracking bot
+Meta Title: How to Build a Price Tracking Bot in Python
+Meta Description: Learn how to build a price tracking bot that scrapes prices, stores history, detects drops, and sends Slack alerts. A complete Python guide for any scale.</p>
+<hr />
+<h2>LinkedIn Post</h2>
+<p>Most price tracking tutorials stop at "print the price to terminal." That's not a bot. That's a demo.</p>
+<p>A real price tracking system has four distinct jobs: fetch data on a schedule, store it with timestamps, detect meaningful changes, and alert you when something is actually worth acting on. Most hobby scripts collapse these into one tangled mess, which is exactly why they break the moment a site updates a CSS class or starts rendering prices via JavaScript.</p>
+<p>The architecture matters more than the code. Keep the scraping layer, storage layer, change detector, and alerting layer separate. That separation is what lets you swap BeautifulSoup for a scraping API without rewriting your alert logic. It's what lets you scale from 10 products to 10,000 without starting over.</p>
+<p>A few things worth knowing before you build:</p>
+<p>SQLite is enough for most projects. No server, no configuration, handles hundreds of thousands of records without complaint.</p>
+<p>Comparing price drops against yesterday's price creates false positives. Use the earliest recorded price as your baseline.</p>
+<p>The most dangerous failure mode is a silent one. The scraper runs, no errors appear, but the data is stale. Build monitoring around your monitoring.</p>
+<p>And past around 500 products across multiple retailers, maintaining a DIY scraper becomes more expensive than just paying for a scraping API. The math shifts faster than most people expect.</p>
+<p>The full guide, including working Python code for all four layers, is at scrapebadger.com</p>
+<hr />
+<h2>Twitter Thread</h2>
+<p>A price scraper fetches prices.
+A price tracking bot fetches, stores, detects drops, and alerts you.</p>
+<p>Most tutorials build the first and call it the second.</p>
+<p>Read the full guide: scrapebadger.com</p>
+<hr />
+<h1>How to Build a Price Tracking Bot for E-commerce Websites</h1>
+<p>Most price tracking tutorials show you how to scrape a single Amazon product page and print the price to a terminal. That's fine for a five-minute demo. It's useless for anything you'd actually run.</p>
+<p>A real price tracking bot has four distinct jobs: fetch product data on a schedule, store it with timestamps, detect meaningful changes, and alert you when something worth acting on happens. Each of those steps has its own failure modes. This guide covers all of them.</p>
+<p>By the end, you'll have a working Python pipeline that monitors multiple product URLs, persists price history in SQLite, calculates drop percentages, and sends a Slack notification when a threshold is crossed. The same architecture scales from 10 products to 10,000 with straightforward modifications.</p>
+<h2>The Architecture Before the Code</h2>
+<p>A price tracking bot isn't a single script — it's a small pipeline with four components, each with a single responsibility.</p>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Responsibility</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Scraper</td>
+<td>Fetches current price, stock status, and product name from a URL</td>
+</tr>
+<tr>
+<td>Storage</td>
+<td>Persists price records with timestamps for historical comparison</td>
+</tr>
+<tr>
+<td>Change detector</td>
+<td>Compares current price against historical baseline, calculates drop %</td>
+</tr>
+<tr>
+<td>Alerting</td>
+<td>Notifies you when a threshold is crossed</td>
+</tr>
+</tbody>
+</table>
+<p>Thinking in layers matters because this is where most hobby scripts fail. They mix scraping logic with alerting logic, have no storage, and break the moment the site changes a CSS class. Keeping concerns separate means you can swap out the scraper (say, from BeautifulSoup to a scraping API) without touching the alert logic.</p>
+<h2>The Scraping Layer: Where Most Bots Break</h2>
+<p>The scraping layer is where you'll spend the most debugging time. The problem isn't writing the initial scraper — it's keeping it working.</p>
+<p>E-commerce sites are actively hostile to scrapers. Amazon runs thousands of A/B tests. Prices are often rendered client-side via JavaScript. CSS selectors that work today break when a site redesigns. Anti-bot systems detect headless browsers, unusual request patterns, and datacenter IP ranges.</p>
+<p>The two realistic approaches:</p>
+<p><strong>BeautifulSoup + requests</strong> works for static pages and simpler retailers. Fast, cheap, and easy to write. Breaks the moment JavaScript rendering is involved or anti-bot measures are in place.</p>
+<p><strong>A scraping API</strong> handles the infrastructure — proxy rotation, JavaScript rendering, request pacing, CAPTCHA solving — and returns structured data. More expensive per call, but the maintenance burden stays on the provider's side, not yours.</p>
+<p>For a production bot tracking a watchlist across multiple retailers, a scraping API is almost always the right choice. The time you'd spend maintaining a headless browser setup for Amazon alone exceeds the cost of the API within a week.</p>
+<p>Here's the minimal scraping function you'd write using an HTTP-based approach:</p>
+<pre><code class="language-python">import requests
+from bs4 import BeautifulSoup
+from datetime import datetime
+
+def scrape_price(url: str, css_selector: str) -&gt; dict:
+    headers = {
+        &quot;User-Agent&quot;: (
+            &quot;Mozilla/5.0 (Windows NT 10.0; Win64; x64) &quot;
+            &quot;AppleWebKit/537.36 (KHTML, like Gecko) &quot;
+            &quot;Chrome/131.0.0.0 Safari/537.36&quot;
+        )
+    }
+
+    response = requests.get(url, headers=headers, timeout=15)
+    response.raise_for_status()
+
+    soup = BeautifulSoup(response.text, &quot;html.parser&quot;)
+    element = soup.select_one(css_selector)
+
+    if not element:
+        raise ValueError(f&quot;Price element not found at {url}&quot;)
+
+    # Strip currency symbols and commas
+    raw = element.get_text(strip=True)
+    price_text = raw.replace(&quot;$&quot;, &quot;&quot;).replace(&quot;,&quot;, &quot;&quot;).replace(&quot;£&quot;, &quot;&quot;).replace(&quot;€&quot;, &quot;&quot;)
+
+    return {
+        &quot;url&quot;: url,
+        &quot;price&quot;: float(price_text),
+        &quot;timestamp&quot;: datetime.now().isoformat(),
+    }
+</code></pre>
+<p>In practice, you'll need a per-site <code>css_selector</code> because Amazon, eBay, and Walmart all structure their price elements differently. Store these in a config file alongside your product URLs.</p>
+<p><strong>The honest constraint:</strong> This approach works on simple retail pages. For anything with JavaScript rendering, you'll either need a headless browser (Playwright or Selenium) or a service that handles that for you. The CSS selector approach also requires manual updates when sites change their structure — which they will.</p>
+<h2>The Storage Layer: SQLite Is Enough</h2>
+<p>For most price tracking bots, SQLite is the right database. It's a single file, no server required, handles hundreds of thousands of records without issues, and is supported by Python's standard library. You don't need Postgres until you're tracking millions of price points with concurrent access.</p>
+<pre><code class="language-python">import sqlite3
+from pathlib import Path
+
+DB_FILE = Path(__file__).parent / &quot;prices.db&quot;
+
+def setup_database():
+    con = sqlite3.connect(DB_FILE)
+    cur = con.cursor()
+
+    cur.execute(&quot;&quot;&quot;
+        CREATE TABLE IF NOT EXISTS products (
+            id      INTEGER PRIMARY KEY AUTOINCREMENT,
+            url     TEXT UNIQUE NOT NULL,
+            name    TEXT,
+            selector TEXT NOT NULL
+        )
+    &quot;&quot;&quot;)
+
+    cur.execute(&quot;&quot;&quot;
+        CREATE TABLE IF NOT EXISTS price_history (
+            id          INTEGER PRIMARY KEY AUTOINCREMENT,
+            product_id  INTEGER REFERENCES products(id),
+            price       REAL NOT NULL,
+            recorded_at TEXT NOT NULL
+        )
+    &quot;&quot;&quot;)
+
+    con.commit()
+    con.close()
+</code></pre>
+<p>Two tables. <code>products</code> stores what you're tracking. <code>price_history</code> is an append-only log of every price observation with a timestamp. Never delete historical records — you'll want them for trend analysis.</p>
+<p>When inserting a new price observation:</p>
+<pre><code class="language-python">def record_price(url: str, price: float, timestamp: str):
+    con = sqlite3.connect(DB_FILE)
+    cur = con.cursor()
+
+    cur.execute(&quot;SELECT id FROM products WHERE url = ?&quot;, (url,))
+    row = cur.fetchone()
+
+    if row:
+        product_id = row[0]
+        cur.execute(
+            &quot;INSERT INTO price_history (product_id, price, recorded_at) VALUES (?, ?, ?)&quot;,
+            (product_id, price, timestamp)
+        )
+        con.commit()
+
+    con.close()
+</code></pre>
+<h2>The Change Detector: What "Price Drop" Actually Means</h2>
+<p>This is the part most tutorials skip. A price change isn't automatically worth alerting on. A $0.01 fluctuation is noise. A 15% drop on a product you're tracking for procurement purposes is a real signal.</p>
+<p>Two thresholds worth setting explicitly:</p>
+<ul>
+<li><strong>Minimum drop percentage</strong> (e.g., <span style="color: #2D6A4F; font-weight: bold;">5%</span> for general tracking, <span style="color: #2D6A4F; font-weight: bold;">10–15%</span> for high-value items)</li>
+<li><strong>Baseline price</strong> — use the earliest recorded price, not yesterday's price, to detect real drops rather than oscillation</li>
+</ul>
+<pre><code class="language-python">def get_price_drop(url: str) -&gt; dict | None:
+    con = sqlite3.connect(DB_FILE)
+    cur = con.cursor()
+
+    cur.execute(&quot;SELECT id FROM products WHERE url = ?&quot;, (url,))
+    row = cur.fetchone()
+    if not row:
+        con.close()
+        return None
+
+    product_id = row[0]
+
+    cur.execute(
+        &quot;&quot;&quot;
+        SELECT price FROM price_history
+        WHERE product_id = ?
+        ORDER BY recorded_at ASC
+        LIMIT 1
+        &quot;&quot;&quot;,
+        (product_id,)
+    )
+    earliest = cur.fetchone()
+
+    cur.execute(
+        &quot;&quot;&quot;
+        SELECT price, recorded_at FROM price_history
+        WHERE product_id = ?
+        ORDER BY recorded_at DESC
+        LIMIT 1
+        &quot;&quot;&quot;,
+        (product_id,)
+    )
+    latest = cur.fetchone()
+    con.close()
+
+    if not earliest or not latest:
+        return None
+
+    earliest_price = earliest[0]
+    current_price, recorded_at = latest
+
+    if earliest_price == 0:
+        return None
+
+    drop_pct = (earliest_price - current_price) / earliest_price * 100
+
+    return {
+        &quot;url&quot;: url,
+        &quot;earliest_price&quot;: earliest_price,
+        &quot;current_price&quot;: current_price,
+        &quot;drop_pct&quot;: round(drop_pct, 2),
+        &quot;recorded_at&quot;: recorded_at,
+    }
+</code></pre>
+<p>If <code>drop_pct</code> is negative, the price went up. If it exceeds your threshold, it's worth alerting on.</p>
+<h2>The Alerting Layer: Slack Webhooks</h2>
+<p>Slack is the fastest path to useful alerts. A simple webhook POST means you get notifications in a channel your team already watches, with no email configuration required.</p>
+<pre><code class="language-python">import requests
+import os
+
+SLACK_WEBHOOK = os.getenv(&quot;SLACK_WEBHOOK_URL&quot;)
+
+def send_price_alert(data: dict):
+    if not SLACK_WEBHOOK:
+        print(&quot;SLACK_WEBHOOK_URL not set — skipping alert&quot;)
+        return
+
+    message = (
+        f&quot;:chart_with_downwards_trend: *Price Drop Detected*\n&quot;
+        f&quot;URL: {data['url']}\n&quot;
+        f&quot;Was: *${data['earliest_price']:.2f}*  →  Now: *${data['current_price']:.2f}*\n&quot;
+        f&quot;Drop: *{data['drop_pct']}%*\n&quot;
+        f&quot;Recorded: {data['recorded_at']}&quot;
+    )
+
+    try:
+        response = requests.post(
+            SLACK_WEBHOOK,
+            json={&quot;text&quot;: message},
+            timeout=10
+        )
+        response.raise_for_status()
+    except requests.exceptions.RequestException as e:
+        print(f&quot;Alert failed: {e}&quot;)
+</code></pre>
+<p>The <code>timeout=10</code> is not optional. A slow Slack response will block your entire check cycle if you skip it.</p>
+<h2>Wiring It Together: The Main Loop</h2>
+<pre><code class="language-python">import asyncio
+import os
+from pathlib import Path
+
+PRODUCTS = [
+    {
+        &quot;url&quot;: &quot;https://example-shop.com/product/widget-pro&quot;,
+        &quot;name&quot;: &quot;Widget Pro&quot;,
+        &quot;selector&quot;: &quot;span.price&quot;
+    },
+    {
+        &quot;url&quot;: &quot;https://another-retailer.com/items/gadget-x&quot;,
+        &quot;name&quot;: &quot;Gadget X&quot;,
+        &quot;selector&quot;: &quot;div.product-price&quot;
+    },
+]
+
+PRICE_DROP_THRESHOLD = 5.0  # Alert if price drops &gt;= 5%
+
+def run_price_check():
+    setup_database()
+
+    for product in PRODUCTS:
+        try:
+            result = scrape_price(product[&quot;url&quot;], product[&quot;selector&quot;])
+            record_price(result[&quot;url&quot;], result[&quot;price&quot;], result[&quot;timestamp&quot;])
+
+            drop_data = get_price_drop(result[&quot;url&quot;])
+            if drop_data and drop_data[&quot;drop_pct&quot;] &gt;= PRICE_DROP_THRESHOLD:
+                send_price_alert(drop_data)
+
+        except Exception as e:
+            print(f&quot;Error processing {product['url']}: {e}&quot;)
+            # Log and continue — don't let one failure block the rest
+
+if __name__ == &quot;__main__&quot;:
+    run_price_check()
+</code></pre>
+<p>Each product is processed independently. A failure on one URL doesn't abort the rest of the run. Errors are logged and the loop continues.</p>
+<h2>Scheduling: Cron or a Schedule Library</h2>
+<p>Two practical options:</p>
+<p><strong>Cron</strong> (Linux/macOS) — reliable, no extra dependencies, runs whether or not you have a Python process running:</p>
+<pre><code class="language-bash"># Check prices every 6 hours
+0 */6 * * * /path/to/.venv/bin/python /path/to/price_tracker.py &gt;&gt; /path/to/tracker.log 2&gt;&amp;1
+</code></pre>
+<p><strong><code>schedule</code> library</strong> — useful if you want to keep everything in Python:</p>
+<pre><code class="language-python">import schedule
+import time
+
+schedule.every(6).hours.do(run_price_check)
+
+while True:
+    schedule.run_pending()
+    time.sleep(60)
+</code></pre>
+<p>For most setups, cron is more reliable. The <code>schedule</code> loop requires a process to stay alive. If it crashes, you stop getting data and won't know until you notice a gap.</p>
+<h2>Common Failure Modes</h2>
+<table>
+<thead>
+<tr>
+<th>Failure</th>
+<th>Symptom</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CSS selector breaks</td>
+<td>Price not found, <code>ValueError</code></td>
+<td>Inspect the live page, update selector in config</td>
+</tr>
+<tr>
+<td>IP blocked</td>
+<td>Empty response or CAPTCHA page</td>
+<td>Rotate user-agent, add delay between requests, or use a scraping API</td>
+</tr>
+<tr>
+<td>JavaScript-rendered price</td>
+<td>Selector exists but returns empty string</td>
+<td>Switch to Playwright or a scraping API</td>
+</tr>
+<tr>
+<td>Silent data gaps</td>
+<td>No errors, but price history has holes</td>
+<td>Add a check: if zero results in last N hours, log a warning</td>
+</tr>
+<tr>
+<td>Alert fatigue</td>
+<td>Too many notifications</td>
+<td>Raise the threshold or filter by minimum absolute price change</td>
+</tr>
+</tbody>
+</table>
+<p>The most dangerous failure is a silent one — the scraper runs without errors but returns stale or incomplete data. Build monitoring around your monitoring: alert if a product hasn't had a price recorded in the expected interval.</p>
+<h2>Practical Decisions at Different Scales</h2>
+<p>If you're tracking <span style="color: #2D6A4F; font-weight: bold;">under 50 products</span>, a single cron job with synchronous scraping is fine. Run every 4–6 hours, keep the code simple.</p>
+<p>If you're tracking <span style="color: #2D6A4F; font-weight: bold;">50–500 products</span>, move to async scraping with <code>asyncio</code> to parallelize requests. Add per-domain rate limiting so you don't hammer a single site.</p>
+<p>Above <span style="color: #2D6A4F; font-weight: bold;">500 products</span>, a scraping API becomes essentially mandatory for sites with anti-bot protection. The maintenance cost of keeping a DIY scraper reliable across that many URLs and multiple retailers outweighs the per-request cost difference.</p>
+<p>The same trade-off applies when choosing between building and buying your scraping infrastructure — if you're evaluating that decision for a related project, the breakdown in our <a href="https://scrapebadger.com/blog/build-vs-buy-should-you-build-your-own-twitter-scraper">build vs. buy comparison for scraping infrastructure</a> is worth reading, as the economics translate directly.</p>
+<p>For the data storage layer, once you've outgrown SQLite, the migration path is straightforward. Our guide to <a href="https://scrapebadger.com/blog/how-to-store-twitter-data-in-postgresql">storing scraped data in PostgreSQL</a> covers the schema patterns that hold up as data volume grows.</p>
+<h2>Extensions Worth Adding</h2>
+<p>Once the core pipeline is running, these are the upgrades that actually matter:</p>
+<ul>
+<li><strong>Lowest price tracking</strong> — store the historical minimum per product separately so you can display "X% above all-time low"</li>
+<li><strong>Stock status tracking</strong> — a price drop on an out-of-stock item isn't actionable. Add an <code>in_stock</code> boolean to every price record</li>
+<li><strong>Per-product thresholds</strong> — different products warrant different sensitivity. A $5 notebook drop and a $200 laptop drop require different thresholds</li>
+<li><strong>Weekly digest</strong> — instead of per-event alerts, a weekly summary of price movements across your full watchlist is often more useful for purchasing decisions</li>
+</ul>
+<hr />
+<h2>FAQ</h2>
+<p><strong>What's the simplest way to build a price tracking bot in Python?</strong></p>
+<p>The minimal version is: a <code>requests</code> + <code>BeautifulSoup</code> scraper, a SQLite database for storage, and a Slack webhook for alerts. That's it. The complexity only grows when you add multiple retailers, JavaScript-rendered pages, or high product volumes. Start with a working single-site scraper before building anything more.</p>
+<p><strong>How often should a price tracking bot check prices?</strong></p>
+<p>It depends on the type of product and the retailer. For most categories, every 4–6 hours is enough — flash sales typically run for hours, not minutes. Checking every 15 minutes is only worthwhile for highly volatile categories like electronics during major sales events. More frequent checks mean more infrastructure cost and more exposure to rate limiting.</p>
+<p><strong>How do I avoid getting blocked when scraping e-commerce sites?</strong></p>
+<p>Use a realistic <code>User-Agent</code> header, add random delays between requests (1–3 seconds), and don't scrape from a datacenter IP for large volumes. For serious tracking at scale, proxy rotation via a managed service is the practical solution. Some sites also have official product data APIs — check whether that's available before building a scraper.</p>
+<p><strong>What database should I use for storing price history?</strong></p>
+<p>SQLite is the right starting point for most projects. It requires no server, handles hundreds of thousands of records comfortably, and is fully supported by Python's standard library. Migrate to PostgreSQL when you need concurrent write access from multiple processes or are storing more than a few million records.</p>
+<p><strong>How do I calculate a meaningful price drop percentage?</strong></p>
+<p>Use the earliest recorded price as your baseline, not yesterday's price. Comparing against yesterday creates false positives from normal price oscillation. The formula is <code>(baseline_price - current_price) / baseline_price * 100</code>. Set a minimum threshold — typically 5% for general use — to filter out noise.</p>
+<p><strong>What's the difference between a price scraper and a price tracking bot?</strong></p>
+<p>A scraper is a one-shot tool that extracts current prices on demand. A price tracking bot is a persistent pipeline: it scrapes on a schedule, stores history, compares against baselines, and triggers alerts when conditions are met. The scraper is one component of the bot. Most tutorials teach you to build a scraper and call it a bot.</p>
+<p><strong>How do I handle sites where prices are loaded by JavaScript?</strong></p>
+<p>BeautifulSoup can't execute JavaScript, so it sees an empty price element. Your options are: use Playwright or Selenium to render the page before scraping, or use a scraping API that handles JavaScript rendering for you. For a multi-site tracker, a scraping API is usually the more practical choice — maintaining a headless browser setup per retailer becomes expensive quickly in both time and compute.</p>
+</body>
+</html>

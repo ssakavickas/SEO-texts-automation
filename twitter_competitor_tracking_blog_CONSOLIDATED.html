@@ -1,0 +1,204 @@
+<!DOCTYPE html>\n<html>\n<head>\n<meta charset='utf-8'>\n<title>Twitter Competitor Tracking</title>\n
+<style>
+    body { 
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+        line-height: 1.6; 
+        max-width: 800px; 
+        margin: 40px auto; 
+        padding: 0 20px; 
+        color: #333; 
+    }
+    h1, h2, h3 { 
+        color: #111; 
+        margin-top: 1.5em; 
+        text-transform: uppercase; 
+        letter-spacing: 0.5px; 
+    }
+    pre { 
+        background-color: #1e1e1e; 
+        color: #d4d4d4; 
+        padding: 16px; 
+        border-radius: 6px; 
+        overflow-x: auto; 
+        font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace; 
+        font-size: 14px; 
+    }
+    code { 
+        font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace; 
+    }
+    p code {
+        background-color: #f6f8fa; 
+        padding: 0.2em 0.4em; 
+        border-radius: 3px; 
+        font-size: 85%;
+        color: #e01e5a;
+    }
+</style>
+\n</head>\n<body>\n<h1>Blog Post Package</h1>
+<h2>SEO Metadata</h2>
+<p>Primary Keyword: Twitter monitoring for lead generation
+Meta Title: How Startups Use Twitter Monitoring for Lead Generation
+Meta Description: Learn how startups capture buying signals on Twitter, build real-time monitoring pipelines, and qualify prospects before outreach. Start generating leads today.</p>
+<hr />
+<h2>LinkedIn Post</h2>
+<p>Most startups are ignoring one of the best lead generation channels available to them.</p>
+<p>People post buying signals on Twitter every single day. "Anyone recommend a tool for X?" "So frustrated with this software." "We need to stop doing this manually." These are in-market prospects broadcasting their pain points publicly.</p>
+<p>Here is what a working Twitter monitoring pipeline actually looks like:</p>
+<ul>
+<li>Define tight, intent-based queries that filter out noise using operators like -is:retweet and min_faves</li>
+<li>Push matched tweets to a webhook in real time, then qualify based on engagement data before reaching out</li>
+<li>Profile every prospect before writing a single word of outreach — bio, role, and recent tweets take seconds to pull</li>
+</ul>
+<p>The outreach competition on Twitter is far lower than LinkedIn. The same conversation that gets buried in a LinkedIn inbox often goes completely unanswered on Twitter.</p>
+<p>Read the full guide: scrapebadger.com</p>
+<p>What signals are you currently monitoring to find in-market prospects? Drop your approach in the comments.</p>
+<hr />
+<h2>Twitter Thread</h2>
+<p>Most startups are missing warm leads hiding in plain sight on Twitter.</p>
+<ul>
+<li>Buying-intent queries surface in-market prospects in real time</li>
+<li>Profile prospects before outreach to avoid generic, ignored replies</li>
+<li>A basic webhook pipeline costs under $50/month to run</li>
+</ul>
+<p>Read the full guide: scrapebadger.com</p>
+<hr />
+<h2>Blog Cover Image</h2>
+<p><img alt="Cover Image" src="/Users/milijonierius/Desktop/Domo workflow/twitter_competitor_tracking_blog_cover.png" /></p>
+<hr />
+<h1>How Startups Use Twitter Monitoring for Lead Generation</h1>
+<h2>Introduction</h2>
+<p>People broadcast their problems publicly on Twitter every day. "Anyone know a good alternative to [tool]?" "So frustrated with [pain point]." "We need to stop doing X manually." These are buying signals sitting in plain sight — and most startups miss them because they're not watching.</p>
+<p>This guide covers how startups use Twitter monitoring for lead generation: what signals to capture, how to structure your monitoring queries, and how to build a lightweight pipeline that routes qualified prospects to your outreach workflow automatically.</p>
+<hr />
+<h2>What Makes Twitter Useful for Lead Generation</h2>
+<p>Twitter's real-time, public nature creates signal density that other platforms don't. A few reasons it works:</p>
+<ul>
+<li><strong>Decision-makers are reachable.</strong> Founders, heads of marketing, and engineering leads post publicly and respond to direct replies.</li>
+<li><strong>Pain points are explicit.</strong> People complain about tools, ask for recommendations, and describe frustrations with enough specificity to know exactly what they need.</li>
+<li><strong>Competition is lower than LinkedIn.</strong> B2B outreach on LinkedIn is saturated. The same conversation on Twitter often goes unanswered.</li>
+<li><strong>Signals arrive in real time.</strong> Someone tweeting "looking for a CRM that integrates with Slack" is in-market right now — not next quarter.</li>
+</ul>
+<hr />
+<h2>What to Monitor</h2>
+<p>Before configuring any tooling, be precise about what you're tracking. The three most valuable signal categories:</p>
+<p>| Signal Type | Example Tweet | Why It Matters |
+|---|---|---|
+| Buying intent | "Anyone recommend a good tool for X?" | Active, in-market prospects |
+| Competitor dissatisfaction | "Really frustrated with [competitor], thinking of switching" | Warm leads already aware of the problem |
+| Pain point expression | "We waste so much time doing X manually" | Indicates a problem your product solves |</p>
+<p>Everything else — general industry discussion, trending hashtags, thought leadership threads — is secondary. Start narrow.</p>
+<hr />
+<h2>Building Your Query Set</h2>
+<p>Good monitoring lives or dies on query quality. Broad queries return noise. Tight queries return intent signals.</p>
+<p>Here are query patterns that consistently surface high-quality leads:</p>
+<pre><code># Direct buying intent
+&quot;anyone recommend&quot; OR &quot;looking for a tool&quot; OR &quot;need a good&quot; -is:retweet lang:en
+
+# Competitor dissatisfaction
+&quot;switching from&quot; OR &quot;replacing&quot; OR &quot;tired of&quot; [CompetitorName] -is:retweet
+
+# Pain point your product solves
+&quot;doing X manually&quot; OR &quot;no good solution for&quot; -is:retweet lang:en
+
+# Recommendation requests
+&quot;does anyone know&quot; OR &quot;what do you use for&quot; [your category] -is:retweet min_faves:2
+</code></pre>
+<p>The <code>-is:retweet</code> filter is non-negotiable — it cuts volume by roughly 60% and keeps results to original expressions. Add <code>min_faves:2</code> or <code>min_faves:5</code> to further reduce spam.</p>
+<hr />
+<h2>Setting Up Real-Time Monitoring with ScrapeBadger</h2>
+<p>Manual Twitter searches don't scale. A properly configured monitoring pipeline catches signals the moment they appear and routes them to wherever your team works.</p>
+<p>ScrapeBadger's <a href="https://scrapebadger.com/docs/twitter-streams/filter-rules">Filter Rules API</a> handles real-time tweet delivery via webhook — you define the query, set a polling interval, and matching tweets get pushed to your endpoint automatically.</p>
+<h3>Step 1: Validate Your Query</h3>
+<p>Before creating a rule, test the syntax:</p>
+<pre><code class="language-bash">curl -X POST &quot;https://scrapebadger.com/v1/twitter/filter-rules/validate&quot; \
+  -H &quot;x-api-key: YOUR_API_KEY&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d '{
+    &quot;query&quot;: &quot;\&quot;looking for a tool\&quot; OR \&quot;anyone recommend\&quot; -is:retweet lang:en&quot;
+  }'
+</code></pre>
+<p>The validate endpoint checks for unbalanced quotes, bad operators, and syntax errors before you go live.</p>
+<h3>Step 2: Create a Filter Rule</h3>
+<pre><code class="language-bash">curl -X POST &quot;https://scrapebadger.com/v1/twitter/filter-rules&quot; \
+  -H &quot;x-api-key: YOUR_API_KEY&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d '{
+    &quot;query&quot;: &quot;\&quot;looking for a tool\&quot; OR \&quot;anyone recommend\&quot; -is:retweet lang:en&quot;,
+    &quot;interval&quot;: &quot;standard&quot;,
+    &quot;webhook_url&quot;: &quot;https://your-server.com/webhook/leads&quot;
+  }'
+</code></pre>
+<h3>Polling Interval Options</h3>
+<p>Choose the interval based on how time-sensitive your signals are:</p>
+<p>| Tier | Poll Interval | Credits/Rule/Day | Best For |
+|---|---|---|---|
+| <span style="background-color: #dcfce7; padding: 2px 4px; border-radius: 4px; color: #166534;">Turbo</span> | 0.5 seconds | 30,000 | High-volume, time-sensitive |
+| <span style="background-color: #dcfce7; padding: 2px 4px; border-radius: 4px; color: #166534;">Fast</span> | 5 seconds | 10,000 | Active campaign monitoring |
+| <span style="background-color: #dbeafe; padding: 2px 4px; border-radius: 4px; color: #1e40af;">Standard</span> | 1 minute | 1,500 | Everyday lead monitoring |
+| <span style="background-color: #fee2e2; padding: 2px 4px; border-radius: 4px; color: #991b1b;">Relaxed</span> | 10 minutes | 500 | Low-volume niche queries |
+| <span style="background-color: #fee2e2; padding: 2px 4px; border-radius: 4px; color: #991b1b;">Daily</span> | 24 hours | 100 | Digest-style summaries |</p>
+<p>For most lead generation use cases, <strong>Standard</strong> works fine. At ~$4.50/month per rule, monitoring 10 buying-intent queries costs roughly $45/month.</p>
+<hr />
+<h2>Qualifying Leads After Capture</h2>
+<p>Not every matched tweet is worth pursuing. Once a tweet arrives at your webhook, run a quick qualification step before it goes to your outreach queue.</p>
+<p>Use the <a href="https://scrapebadger.com/docs/twitter/tweets">Tweets API</a> to pull engagement data on the tweet:</p>
+<pre><code class="language-python">import httpx
+
+async def get_tweet_details(tweet_id: str, api_key: str) -&gt; dict:
+    url = f&quot;https://scrapebadger.com/v1/twitter/tweets/tweet/{tweet_id}&quot;
+    async with httpx.AsyncClient() as client:
+        response = await client.get(url, headers={&quot;x-api-key&quot;: api_key})
+        return response.json()
+</code></pre>
+<p>Then check who engaged with it — retweeters and reply authors are your warmest prospects:</p>
+<pre><code>GET /v1/twitter/tweets/tweet/{id}/retweeters   # People who amplified the pain point
+GET /v1/twitter/tweets/tweet/{id}/replies      # People who joined the conversation
+GET /v1/twitter/tweets/tweet/{id}/favoriters   # Passive but interested accounts
+</code></pre>
+<p>A tweet with 15 replies and 40 likes signals a widespread pain point. Pull everyone who engaged — they're all potential prospects.</p>
+<hr />
+<h2>Profiling Prospects Before Outreach</h2>
+<p>A relevant tweet is a lead indicator, not a confirmed fit. Before reaching out, pull the author's profile using the <a href="https://scrapebadger.com/docs/twitter/users">Users API</a>:</p>
+<pre><code class="language-python">async def profile_prospect(username: str, api_key: str) -&gt; dict:
+    url = f&quot;https://scrapebadger.com/v1/twitter/users/{username}/by_username&quot;
+    async with httpx.AsyncClient() as client:
+        response = await client.get(url, headers={&quot;x-api-key&quot;: api_key})
+        return response.json()
+</code></pre>
+<p>What to check:
+- <strong>Bio</strong>: Does it match your ICP? Role, company size signals, relevant keywords.
+- <strong>Follower count</strong>: Higher follower accounts carry more amplification risk — and opportunity.
+- <strong>Recent tweets</strong>: Pull <code>GET /v1/twitter/users/{username}/latest_tweets</code> to understand what they care about before writing a single word of outreach.</p>
+<p>This takes 2–3 API calls per prospect and takes seconds. It's the difference between a relevant reply and a generic one that gets ignored.</p>
+<hr />
+<h2>A Minimal Working Pipeline</h2>
+<p>Here's the full flow, simplified:</p>
+<pre><code>1. POST /v1/twitter/filter-rules          → Define buying-intent queries
+2. Webhook receives matched tweets        → Filter: -is:retweet, check min engagement
+3. GET /v1/twitter/tweets/tweet/{id}      → Pull full tweet context
+4. GET /v1/twitter/tweets/tweet/{id}/replies → Expand prospect pool
+5. GET /v1/twitter/users/{username}/by_username → Profile before outreach
+6. Route to Slack/CRM/outreach tool      → Human reviews and replies
+</code></pre>
+<p>Keep a <code>seen_ids</code> set to deduplicate across webhook deliveries. Store raw tweet payloads before processing — you'll want to reprocess with different logic as your qualification criteria evolve.</p>
+<hr />
+<h2>What Kills Lead Gen Pipelines</h2>
+<p>A few failure modes that consistently cause problems:</p>
+<p><strong>Query drift.</strong> Buying-intent queries need tuning over time. A query that works in week one starts returning noise as you discover new false-positive patterns. Schedule a 15-minute audit every two weeks.</p>
+<p><strong>No deduplication.</strong> The same tweet can arrive multiple times depending on interval settings. Deduplicate on <code>tweet_id</code> before anything reaches your outreach queue.</p>
+<p><strong>Engaging too fast on broad signals.</strong> "Anyone know a good project management tool?" matches your query, but the account might be a 14-year-old student. Profile first, reply second.</p>
+<p><strong>Missing shadow-banned accounts.</strong> If you're tracking a specific account with <code>from:username</code> and getting zero results for an active account, it may be shadow-banned. Verify at: <code>https://x.com/search?q=from%3AUSERNAME&amp;src=typed_query&amp;f=live</code></p>
+<hr />
+<h2>FAQ</h2>
+<p><strong>How many monitoring rules should I run?</strong>
+Start with 3–5 tightly scoped queries. Running 20 broad rules generates volume you can't process. Quality over quantity — a signal you act on beats 50 you ignore.</p>
+<p><strong>How quickly should I respond to a matched tweet?</strong>
+Within the hour if possible. Twitter conversations move fast, and responding the same day to a buying-intent tweet consistently outperforms delayed outreach.</p>
+<p><strong>Is this legal and within Twitter's terms?</strong>
+Monitoring public tweets and reaching out via public replies is standard practice. Review platform terms and applicable data laws for your jurisdiction before storing personal data or automating DMs at scale.</p>
+<p><strong>What's the minimum viable setup?</strong>
+One filter rule on Standard polling, a webhook that logs to a Google Sheet or Slack channel, and a human reviewing the feed daily. You can be operational in under two hours.</p>
+<hr />
+<h2>Conclusion</h2>
+<p>The pipeline is straightforward: define tight buying-intent queries, push matched tweets to a webhook, profile prospects before engaging, and route qualified signals to wherever your team does outreach. The tooling cost is low. The harder work is crafting queries that surface genuine intent signals rather than noise — and that gets better with iteration.</p>
+<p>Start with one query, run it for a week, audit what you captured, and tighten from there.</p>\n</body>\n</html>

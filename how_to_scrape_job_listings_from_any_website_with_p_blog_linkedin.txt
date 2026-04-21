@@ -1,0 +1,11 @@
+Most job scraping tutorials show you the easy version. One site, clean HTML, no resistance. Then you try it on a real job board and nothing works.
+
+The actual problems are less glamorous: JavaScript-rendered listings that requests never sees, selectors that break silently when a site updates its HTML, duplicates stacking up across runs, pagination loops that hang or stop early. The scraper "runs" but the data is garbage.
+
+The part most people skip is defining the schema before writing a single line of parsing code. What fields do you actually need? What are the safe defaults when a field is missing? What makes a job ID stable across multiple runs? Answer those questions first, and the rest of the code gets dramatically simpler.
+
+The other thing worth knowing: the difference between static and dynamic sites changes everything about your tooling. BeautifulSoup on a JavaScript-rendered page returns a skeleton. Before picking your approach, disable JavaScript in DevTools and reload the page. If the listings disappear, you need a browser or you need to find the underlying API call.
+
+Silent data loss is the failure mode that bites hardest. No error, no crash, just a CSV with 200 rows when you expected 2,000 because a CSS class changed. Build a volume sanity check. If a run returns less than 20% of expected output, log a warning.
+
+The full guide covers static and dynamic scraping, pagination, deduplication, atomic exports, and what production-ready actually means for a recurring scraper: scrapebadger.com

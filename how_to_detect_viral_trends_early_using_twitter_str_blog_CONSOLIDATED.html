@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <title>Blog Post Package</title>
+    
+<style>
+    body { 
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+        line-height: 1.6; 
+        max-width: 800px; 
+        margin: 40px auto; 
+        padding: 0 20px; 
+        color: #333; 
+    }
+    h1, h2, h3 { 
+        color: #111; 
+        margin-top: 1.5em; 
+        text-transform: uppercase; 
+        letter-spacing: 0.5px; 
+        border-bottom: 2px solid #2D6A4F;
+        padding-bottom: 5px;
+    }
+    pre { 
+        background-color: #1e1e1e; 
+        color: #d4d4d4; 
+        padding: 16px; 
+        border-radius: 6px; 
+        overflow-x: auto; 
+        font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace; 
+        font-size: 14px; 
+        margin: 20px 0;
+    }
+    code { 
+        font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace; 
+    }
+    p code {
+        background-color: #f6f8fa; 
+        padding: 0.2em 0.4em; 
+        border-radius: 3px; 
+        font-size: 85%;
+        color: #2D6A4F;
+    }
+    table {
+        border-collapse: collapse;
+        width: 100%;
+        margin: 20px 0;
+    }
+    th, td {
+        border: 1px solid #ddd;
+        padding: 12px;
+        text-align: left;
+    }
+    th {
+        background-color: #f8f9fa;
+    }
+</style>
+
+</head>
+<body>
+    <h1>Blog Post Package</h1>
+<h2>SEO Metadata</h2>
+<p>Primary Keyword: detect viral trends Twitter
+Meta Title: Detect Viral Twitter Trends Early With Streaming APIs
+Meta Description: Learn how to detect viral Twitter trends before they peak using velocity signals, filter rules, and WebSocket streams. Build a real-time trend detection pipeline today.</p>
+<hr />
+<h2>LinkedIn Post</h2>
+<p>Most teams find out about trending topics the same way everyone else does — after the conversation has already peaked.</p>
+<p>That is not trend intelligence. That is catching the tail end of something that broke hours ago.</p>
+<p>The teams that actually benefit are the ones who detect velocity spikes before a topic goes mainstream. Here is what that looks like in practice:</p>
+<ul>
+<li>Velocity beats volume. A hashtag jumping from 50 to 500 mentions in 15 minutes is a stronger early signal than a topic with 10,000 steady daily mentions.</li>
+<li>Two layers matter. Streaming filter rules catch spikes early. The Trends API confirms a topic has broken through. Use both, in that order.</li>
+<li>Noise filtering is where most pipelines fail. Filtering out retweets, setting minimum engagement thresholds, and tracking source diversity separates real signals from coordinated bot activity.</li>
+</ul>
+<p>MIT research showed velocity-based detection can identify trends an average of 1.43 hours before Twitter's own algorithm. The methodology still holds.</p>
+<p>The full implementation guide, including the WebSocket setup, velocity counter code, and polling tier breakdown, is at scrapebadger.com.</p>
+<p>What signals are you currently using to catch trends early? Are you monitoring velocity, or still relying on the Trending tab?</p>
+<hr />
+<h2>Twitter Thread</h2>
+<p>Most teams find trends after they peak. Here is how to get there first.</p>
+<ul>
+<li>Measure velocity, not volume</li>
+<li>Use streaming rules to catch spikes before trending lists catch up</li>
+<li>Filter retweets and bots or your alerts are noise</li>
+</ul>
+<p>Read the full guide: scrapebadger.com</p>
+<hr />
+<h1>How to Detect Viral Trends Early Using Twitter Streams</h1>
+<p>Most teams discover trending topics the same way everyone else does — by checking the Trending tab after the conversation has already peaked. By the time a topic appears there, you're not early. You're catching the tail end of something that broke hours ago.</p>
+<p>The teams that actually benefit from trend intelligence aren't faster at reading the Trending tab. They've built pipelines that detect velocity spikes <em>before</em> a topic goes mainstream. This guide covers how to do that in practice — the signals that matter, the tools that work, and a concrete implementation using ScrapeBadger's streaming API.</p>
+<h2>Why Twitter Is Still the Right Signal Source</h2>
+<p>Twitter/X processes around 500 million tweets per day. The platform's real value for trend detection isn't volume — it's velocity. A hashtag that jumps from zero to 5,000 mentions in an hour carries more signal than one generating a steady 50,000 over a week. That distinction is why Twitter remains the fastest source for breaking topics, even as the official API has become harder to access affordably.</p>
+<p>The research backs this up. MIT researchers demonstrated in 2012 that Twitter trends could be detected before Twitter's own algorithm in 79% of cases — an average of 1.43 hours earlier — by monitoring velocity patterns instead of waiting for volume thresholds to trigger. The core insight hasn't changed: you're not looking for what's already big, you're looking for what's growing fast.</p>
+<h2>What "Early" Actually Means</h2>
+<p>Early trend detection isn't about scraping more data. It's about measuring the right thing at the right time window. Three signals matter:</p>
+<p><strong>Velocity over volume.</strong> How fast are mentions accumulating, not how many total? A topic going from 50 mentions to 500 in 15 minutes is a stronger early signal than a topic with 10,000 steady daily mentions.</p>
+<p><strong>Source diversity.</strong> Are the mentions coming from a handful of accounts or spreading across unrelated ones? Twitter's own algorithm weights diverse participation — a spike from a coordinated group looks different from organic spread.</p>
+<p><strong>Engagement acceleration.</strong> Early retweets and replies from accounts with real follower counts amplify a topic's reach exponentially. Twitter's scoring uses logarithmic engagement scaling: <code>Score = weight × log2(1 + engagement_count)</code>, which means the first wave of engagement is disproportionately valuable for a topic's trajectory.</p>
+<h2>The Two-Layer Detection Strategy</h2>
+<p>In practice, early detection works as a two-layer approach: monitoring velocity on specific topics you care about, and confirming against what's actually gone mainstream.</p>
+<table>
+<thead>
+<tr>
+<th>Layer</th>
+<th>Purpose</th>
+<th>Endpoint</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Filter Rules (streaming)</td>
+<td>Catch velocity spikes early, before topics trend</td>
+<td><code>POST /v1/twitter/filter-rules</code></td>
+</tr>
+<tr>
+<td>Trends API</td>
+<td>Confirm a topic has broken through to mainstream</td>
+<td><code>GET /v1/twitter/trends/place/{woeid}</code></td>
+</tr>
+</tbody>
+</table>
+<p>The Trends API tells you what's already trending. The Filter Rules layer is where early detection actually happens.</p>
+<h2>Step 1: Validate Your Query Syntax</h2>
+<p>Before creating a monitoring rule, run your query through the validate endpoint. Syntax errors in filter rules are a common source of wasted credits and missed signals.</p>
+<pre><code class="language-bash">curl -X POST &quot;https://scrapebadger.com/v1/twitter/filter-rules/validate&quot; \
+  -H &quot;x-api-key: YOUR_API_KEY&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d '{&quot;query&quot;: &quot;#AI -is:retweet min_faves:50&quot;}'
+</code></pre>
+<p>The <a href="https://scrapebadger.com/docs/twitter-streams/filter-rules">filter rules documentation</a> covers the full query syntax. Key operators for trend detection:</p>
+<pre><code>bitcoin OR ethereum              # Track multiple keywords simultaneously
+#AI -is:retweet                  # Original tweets only — filters noise
+&quot;breaking news&quot; min_faves:100    # High-engagement tweets only
+from:elonmusk lang:en            # Specific account in a specific language
+</code></pre>
+<p>The <code>-is:retweet</code> operator matters more than most people realize. Retweets amplify existing content — they don't represent new conversation emerging. Filtering them out gives you a cleaner picture of where original discussion is actually originating.</p>
+<h2>Step 2: Create a Filter Rule with the Right Polling Interval</h2>
+<p>This is where the polling tier selection determines how early you actually detect something.</p>
+<table>
+<thead>
+<tr>
+<th>Tier</th>
+<th>Poll Interval</th>
+<th>Credits/Rule/Day</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span style="color: #2D6A4F; font-weight: bold;">Turbo</span></td>
+<td>Every 0.5 seconds</td>
+<td>30,000</td>
+</tr>
+<tr>
+<td><span style="color: #2D6A4F; font-weight: bold;">Fast</span></td>
+<td>Every 5 seconds</td>
+<td>10,000</td>
+</tr>
+<tr>
+<td><span style="color: #2D6A4F; font-weight: bold;">Standard</span></td>
+<td>Every 1 minute</td>
+<td>1,500</td>
+</tr>
+<tr>
+<td><span style="color: #2D6A4F; font-weight: bold;">Relaxed</span></td>
+<td>Every 10 minutes</td>
+<td>500</td>
+</tr>
+<tr>
+<td><span style="color: #2D6A4F; font-weight: bold;">Daily</span></td>
+<td>Every 24 hours</td>
+<td>100</td>
+</tr>
+</tbody>
+</table>
+<p>For genuine early detection, Standard (1 minute) is the practical floor. Turbo and Fast are appropriate for high-stakes monitoring — financial signals, PR crisis detection, anything where a 30-second head start matters. For most keyword trend research, Standard gives you actionable lead time without burning through credits.</p>
+<pre><code class="language-bash">curl -X POST &quot;https://scrapebadger.com/v1/twitter/filter-rules&quot; \
+  -H &quot;x-api-key: YOUR_API_KEY&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d '{
+    &quot;query&quot;: &quot;#AI -is:retweet min_faves:50&quot;,
+    &quot;tag&quot;: &quot;ai-trend-monitor&quot;,
+    &quot;interval&quot;: &quot;standard&quot;
+  }'
+</code></pre>
+<p>You can run up to 50 rules per API key. In practice, grouping related keywords into a single rule using <code>OR</code> operators is more efficient than creating one rule per keyword.</p>
+<h2>Step 3: Connect via WebSocket for Real-Time Push Delivery</h2>
+<p>Polling the filter rules endpoint on your end adds unnecessary latency. The cleaner approach is to open a WebSocket connection and have matching tweets pushed to you as they're detected.</p>
+<pre><code class="language-python">import asyncio
+import json
+import websockets
+
+async def stream_trends():
+    uri = &quot;wss://[your-domain]/v1/twitter/stream?api_key=YOUR_API_KEY&quot;
+    async with websockets.connect(uri) as ws:
+        async for message in ws:
+            data = json.loads(message)
+            if data[&quot;type&quot;] == &quot;new_tweet&quot;:
+                print(f&quot;Rule: {data['rule_tag']}&quot;)
+                print(f&quot;@{data['author_username']}: {data['tweet_text']}&quot;)
+                print(f&quot;Detected in: {data['latency_ms']}ms&quot;)
+
+asyncio.run(stream_trends())
+</code></pre>
+<p>The <code>latency_ms</code> field in each payload shows how quickly the tweet was detected after posting. In practice, this is typically under 2 seconds on the Fast tier.</p>
+<p>Full WebSocket documentation: <a href="https://scrapebadger.com/docs/twitter-streams/websocket">scrapebadger.com/docs/twitter-streams/websocket</a></p>
+<p>When a tweet arrives, the payload looks like this:</p>
+<pre><code class="language-json">{
+  &quot;type&quot;: &quot;new_tweet&quot;,
+  &quot;source&quot;: &quot;filter_rule&quot;,
+  &quot;rule_id&quot;: &quot;rule-456&quot;,
+  &quot;rule_tag&quot;: &quot;ai-trend-monitor&quot;,
+  &quot;tweet_id&quot;: &quot;1234567890123456789&quot;,
+  &quot;author_username&quot;: &quot;techcrunch&quot;,
+  &quot;tweet_text&quot;: &quot;New AI model drops...&quot;,
+  &quot;tweet_type&quot;: &quot;original&quot;,
+  &quot;latency_ms&quot;: 1200,
+  &quot;detected_at&quot;: &quot;2026-03-04T12:00:00Z&quot;
+}
+</code></pre>
+<h2>Step 4: Confirm Against the Trends API</h2>
+<p>Once your pipeline flags a velocity spike, cross-reference it against the <a href="https://scrapebadger.com/docs/twitter/trends">Trends API</a> to see whether the topic has broken into mainstream trending:</p>
+<pre><code class="language-bash"># Check global trends
+curl &quot;https://scrapebadger.com/v1/twitter/trends/place/1&quot; \
+  -H &quot;x-api-key: YOUR_API_KEY&quot;
+
+# Check US-specific trends
+curl &quot;https://scrapebadger.com/v1/twitter/trends/place/23424977&quot; \
+  -H &quot;x-api-key: YOUR_API_KEY&quot;
+</code></pre>
+<p>Common WOEIDs for reference:</p>
+<table>
+<thead>
+<tr>
+<th>WOEID</th>
+<th>Location</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>1</code></td>
+<td>Worldwide</td>
+</tr>
+<tr>
+<td><code>23424977</code></td>
+<td>United States</td>
+</tr>
+<tr>
+<td><code>23424975</code></td>
+<td>United Kingdom</td>
+</tr>
+<tr>
+<td><code>2459115</code></td>
+<td>New York</td>
+</tr>
+<tr>
+<td><code>2442047</code></td>
+<td>Los Angeles</td>
+</tr>
+</tbody>
+</table>
+<p>If your filter rule is flagging velocity but the topic isn't on the Trends API yet, that's the window you care about. That gap — between early velocity signal and mainstream trending — is where you can act.</p>
+<h2>Building a Velocity Counter</h2>
+<p>The WebSocket stream gives you raw tweet events. To turn that into a velocity signal, you need to count events per time window and alert when the rate changes.</p>
+<pre><code class="language-python">import asyncio
+import json
+import time
+import websockets
+from collections import defaultdict, deque
+
+# Sliding window: track tweet timestamps per rule tag
+windows = defaultdict(deque)
+WINDOW_SECONDS = 300  # 5-minute window
+ALERT_THRESHOLD = 50  # tweets in window triggers alert
+
+async def stream_with_velocity():
+    uri = &quot;wss://[your-domain]/v1/twitter/stream?api_key=YOUR_API_KEY&quot;
+    async with websockets.connect(uri) as ws:
+        async for message in ws:
+            data = json.loads(message)
+            if data[&quot;type&quot;] != &quot;new_tweet&quot;:
+                continue
+
+            tag = data.get(&quot;rule_tag&quot;, &quot;unknown&quot;)
+            now = time.time()
+
+            # Add current timestamp to window
+            windows[tag].append(now)
+
+            # Remove timestamps outside the window
+            while windows[tag] and windows[tag][0] &lt; now - WINDOW_SECONDS:
+                windows[tag].popleft()
+
+            count = len(windows[tag])
+
+            # Alert on threshold breach
+            if count &gt;= ALERT_THRESHOLD:
+                print(f&quot;[ALERT] '{tag}' — {count} tweets in {WINDOW_SECONDS}s&quot;)
+
+asyncio.run(stream_with_velocity())
+</code></pre>
+<p>This is the simplest version of velocity monitoring. In production, you'd want to persist these counts (Redis is the obvious choice), add per-rule baselines so alerts are relative to normal volume, and route alerts to Slack or a webhook.</p>
+<p>For a more complete monitoring pipeline, the <a href="https://scrapebadger.com/blog/how_to_build_a_real-time_twitter_monitoring_pipeli">How to Build a Real-Time Twitter Monitoring Pipeline</a> guide covers the deduplication and storage patterns in detail.</p>
+<h2>Noise Filtering: Where Most Pipelines Fall Down</h2>
+<p>A velocity spike in your pipeline isn't automatically signal. Coordinated campaigns, bot activity, and retweet amplification can all produce false positives. A few filters that help:</p>
+<ul>
+<li><strong>Require original tweets</strong> with <code>-is:retweet</code> in your query. Retweet storms look like trends but represent existing content spreading, not new conversation.</li>
+<li><strong>Set minimum engagement thresholds</strong> — <code>min_faves:10</code> or <code>min_replies:5</code> filters out low-quality or automated posts.</li>
+<li><strong>Track source diversity</strong> in your pipeline. If 90% of velocity is coming from accounts created in the same month, treat that as suspicious.</li>
+<li><strong>Use language filters</strong> (<code>lang:en</code>) to avoid geographic noise inflating counts for topics irrelevant to your target market.</li>
+</ul>
+<p>These aren't set-and-forget. After two weeks of monitoring, audit your false positive rate and tighten or loosen thresholds accordingly.</p>
+<h2>When to Use Which Approach</h2>
+<table>
+<thead>
+<tr>
+<th>Use Case</th>
+<th>Recommended Tier</th>
+<th>Query Pattern</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Brand PR crisis monitoring</td>
+<td>Fast or Turbo</td>
+<td><code>"BrandName" -is:retweet</code></td>
+</tr>
+<tr>
+<td>Industry trend research</td>
+<td>Standard</td>
+<td><code>keyword1 OR keyword2 -is:retweet</code></td>
+</tr>
+<tr>
+<td>High-engagement content sourcing</td>
+<td>Standard</td>
+<td><code>keyword min_faves:100</code></td>
+</tr>
+<tr>
+<td>Competitor product launches</td>
+<td>Standard or Fast</td>
+<td><code>from:competitor OR "product name"</code></td>
+</tr>
+<tr>
+<td>Market-wide signal monitoring</td>
+<td>Relaxed</td>
+<td><code>broad_keyword lang:en</code></td>
+</tr>
+</tbody>
+</table>
+<p>The Standard tier handles most use cases without breaking your credit budget. Reserve Fast and Turbo for specific high-stakes signals where lead time is the actual business requirement.</p>
+<p>If you're building trend detection as part of a broader competitor monitoring workflow, the <a href="https://scrapebadger.com/blog/twitter_monitoring_vs_twitter_scraping_what's_the">Twitter Monitoring vs Twitter Scraping: What's the Difference?</a> post is worth reading for context on how to structure the overall approach.</p>
+<hr />
+<h2>FAQ</h2>
+<p><strong>What's the difference between the Trends API and filter rules for trend detection?</strong></p>
+<p>The Trends API (<a href="https://scrapebadger.com/docs/twitter/trends"><code>GET /v1/twitter/trends/place/{woeid}</code></a>) shows what's already trending — topics that have already hit mainstream volume thresholds. Filter rules are proactive: they monitor for velocity on specific queries <em>before</em> a topic appears on any trending list. Early detection means using filter rules; the Trends API is for confirmation that something has broken through.</p>
+<p><strong>How early can I realistically detect a trend before Twitter's own algorithm flags it?</strong></p>
+<p>MIT research showed an average of 1.43 hours earlier detection with velocity-based methods (at 95% accuracy). In practice, with a Standard (1-minute) polling interval, you're getting signal well before the official trending list. The Fast (5-second) tier narrows that gap further. The actual lead time depends heavily on how niche or broad the topic is — niche topics trending within a specific community can be detected significantly earlier than news-driven spikes.</p>
+<p><strong>How many filter rules should I run simultaneously?</strong></p>
+<p>ScrapeBadger supports up to 50 rules per API key. In practice, grouping related keywords with <code>OR</code> operators into fewer rules is more efficient than creating one per keyword. For example, <code>#OpenAI OR #GPT OR "ChatGPT" -is:retweet</code> as a single rule is cleaner than three separate rules and uses credits more efficiently.</p>
+<p><strong>How do I avoid false positives from bot activity or coordinated posting?</strong></p>
+<p>Three approaches work together: filter to original content with <code>-is:retweet</code>, require minimum engagement (<code>min_faves:10</code>), and monitor source diversity in your pipeline. If a velocity spike is concentrated among accounts with similar creation dates or follower patterns, treat it as a false positive. Auditing your pipeline's false positive rate every few weeks and adjusting thresholds based on actual results is more reliable than trying to tune parameters upfront.</p>
+<p><strong>What's the right polling interval for most use cases?</strong></p>
+<p>Standard (1-minute polling) is the practical default for most trend monitoring workflows. It provides real-time enough detection for content strategy, brand monitoring, and market research without the credit cost of Fast or Turbo tiers. Reserve the faster tiers for high-stakes use cases — financial signal monitoring, PR crisis detection, or anything where minutes genuinely matter to your response time.</p>
+<p><strong>Can I use WebSocket streaming and filter rules together?</strong></p>
+<p>Yes, and this is the recommended architecture. Create filter rules via the REST API (<code>POST /v1/twitter/filter-rules</code>) to define what you're monitoring, then connect via WebSocket to receive matching tweets pushed in real time without polling. The WebSocket connection handles up to 5 concurrent connections per API key. See the <a href="https://scrapebadger.com/docs/twitter-streams/websocket">WebSocket documentation</a> for connection details and event handling.</p>
+<p><strong>Is detecting trends on Twitter the same as monitoring keywords?</strong></p>
+<p>They overlap but aren't the same. Keyword monitoring tracks mentions of specific terms you define. Trend detection is specifically about measuring the <em>rate of change</em> in those mentions — velocity, not volume. A keyword monitor tells you how many mentions you're getting. A trend detector tells you whether that number is accelerating in a way that signals something is about to break through. The pipeline described here does both: keyword monitoring via filter rules, trend detection via the velocity counter layer built on top.</p>
+</body>
+</html>

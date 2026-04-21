@@ -1,0 +1,3 @@
+Primary Keyword: export twitter data
+Meta Title: Export Twitter Data to Google Sheets Automatically
+Meta Description: Learn 4 ways to export Twitter data to Google Sheets automatically — from no-code tools to Apps Script. Pick the right method for your workflow and start today.

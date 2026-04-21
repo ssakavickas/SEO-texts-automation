@@ -1,0 +1,7 @@
+Most founders see important Twitter mentions 3 days too late. Here is how to fix that.
+
+- Use event-driven Filter Rules, not polling
+- Route alerts to Slack or your DB via webhook
+- Monitor lead intent, not just brand mentions
+
+Read the full guide: scrapebadger.com

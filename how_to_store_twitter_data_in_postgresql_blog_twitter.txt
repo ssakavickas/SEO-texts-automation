@@ -1,0 +1,5 @@
+CSV files break the moment you need real answers from tweet data.
+
+PostgreSQL handles it properly: BIGINT IDs, JSONB for raw payloads, ON CONFLICT for clean dedup.
+
+Read the full guide: scrapebadger.com

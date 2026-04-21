@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <title><h2>SEO Metadata</h2></title>
+    
+<style>
+    body { 
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+        line-height: 1.6; 
+        max-width: 800px; 
+        margin: 40px auto; 
+        padding: 0 20px; 
+        color: #333; 
+    }
+    h1, h2, h3 { 
+        color: #111; 
+        margin-top: 1.5em; 
+        text-transform: uppercase; 
+        letter-spacing: 0.5px; 
+        border-bottom: 2px solid #2D6A4F;
+        padding-bottom: 5px;
+    }
+    pre { 
+        background-color: #1e1e1e; 
+        color: #d4d4d4; 
+        padding: 16px; 
+        border-radius: 6px; 
+        overflow-x: auto; 
+        font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace; 
+        font-size: 14px; 
+        margin: 20px 0;
+    }
+    code { 
+        font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace; 
+    }
+    p code {
+        background-color: #f6f8fa; 
+        padding: 0.2em 0.4em; 
+        border-radius: 3px; 
+        font-size: 85%;
+        color: #2D6A4F;
+    }
+    table {
+        border-collapse: collapse;
+        width: 100%;
+        margin: 20px 0;
+    }
+    th, td {
+        border: 1px solid #ddd;
+        padding: 12px;
+        text-align: left;
+    }
+    th {
+        background-color: #f8f9fa;
+    }
+</style>
+
+</head>
+<body>
+    <h2>SEO Metadata</h2>
+<p>Primary Keyword: realtor scraper
+Meta Title: Realtor Scraper: Extract Listings with Python
+Meta Description: Build a reliable realtor scraper with Python. Learn 3 proven approaches to bypass Cloudflare, parse listings, and export clean JSON data from Realtor.com.</p>
+<hr />
+<h2>LinkedIn Post</h2>
+<p>Most real estate scrapers fail before they see a single listing.</p>
+<p>Realtor.com runs Cloudflare plus a custom WAF, and a plain requests.get() call returns a bot challenge page roughly 90% of the time. That trips up a lot of people who assume the hard part is parsing the data. It is not. The hard part is getting the HTML in the first place.</p>
+<p>Here is what most guides miss: Realtor.com embeds its full property dataset inside a <strong>NEXT_DATA</strong> script tag on every page. That means instead of hunting through fragile CSS selectors that break every time the frontend deploys, you parse one clean JSON blob. The data is already structured. You just have to reach it.</p>
+<p>The other thing worth knowing is the 200-result cap on search queries. If you need broader market coverage, you split queries by price range, property type, or bedroom count. Each filter slice gives you another 200-result window. It is not elegant, but it works.</p>
+<p>For most teams the right starting point is a scraping API paired with BeautifulSoup. You get Cloudflare bypass handled for you, pagination is straightforward, and you can have a working pipeline in an afternoon. Playwright with residential proxies makes sense when you need JS-rendered fields like agent phone numbers or price history.</p>
+<p>The full guide covers all three approaches with production-ready code, common failure modes, and a breakdown of exactly which fields are available from search results versus property detail pages.</p>
+<p>scrapebadger.com</p>
+<hr />
+<h2>Twitter Thread</h2>
+<p>Realtor.com blocks plain requests before you see a single listing.</p>
+<p>The fix is not obvious. Here is what actually works.</p>
+<p>Read the full guide: scrapebadger.com</p>
+<hr />
+<h1>How to Scrape Realtor.com Listings with Python</h1>
+<p>Realtor.com is the most MLS-accurate real estate site in the US — listings update every 15 minutes, and the data includes fields you won't find on Zillow: MLS numbers, listing office details, open house schedules, days on market. If you're building a real estate dataset, that depth matters.</p>
+<p>The problem is getting to it reliably. Realtor.com runs Cloudflare plus a custom WAF, and a plain <code>requests.get()</code> call fails before you even see a listing. This guide covers what actually works: the data structures worth targeting, three practical extraction approaches ranked by reliability, and a production-ready script that handles pagination, normalization, and clean JSON output.</p>
+<h2>What's Actually Worth Scraping</h2>
+<p>Before writing a line of code, decide what you need. Realtor.com exposes a lot of data, but not all of it is equally accessible or useful.</p>
+<p><strong>Search results pages</strong> give you the bulk dataset: price, address, beds, baths, square footage, lot size, listing URL, and a property thumbnail. This is what most teams need for market analysis, price tracking, or investment screening.</p>
+<p><strong>Individual property pages</strong> go deeper: MLS number, listing agent name, phone number, listing date, open house schedule, price history, and school district data. More valuable per property, but also more expensive to collect at scale.</p>
+<p><strong>What's embedded where:</strong> Realtor.com embeds structured property data as JSON inside a <code>__NEXT_DATA__</code> script tag on each page. This is the cleanest extraction path — you parse one JSON blob per page rather than scraping dozens of CSS selectors that change every few weeks.</p>
+<pre><code class="language-python">import json
+from bs4 import BeautifulSoup
+
+def extract_next_data(html: str) -&gt; dict:
+    &quot;&quot;&quot;
+    Realtor.com embeds the full property dataset in a __NEXT_DATA__ 
+    script tag. Parsing this is more stable than CSS selector scraping.
+    &quot;&quot;&quot;
+    soup = BeautifulSoup(html, &quot;lxml&quot;)
+    script = soup.find(&quot;script&quot;, {&quot;id&quot;: &quot;__NEXT_DATA__&quot;})
+    if not script:
+        return {}
+    return json.loads(script.string)
+</code></pre>
+<p>The <code>__NEXT_DATA__</code> approach is worth understanding before anything else, because it's what makes Realtor.com much more parseable than it first appears. The problem isn't finding the data — it's getting the rendered HTML past Cloudflare in the first place.</p>
+<h2>Why Direct Requests Fail</h2>
+<p>A basic <code>requests.get("https://www.realtor.com/...")</code> call returns a Cloudflare challenge page roughly 90% of the time without proxy rotation. Realtor.com is classified as "hard difficulty" among real estate scrapers, for a few reasons:</p>
+<ul>
+<li><strong>Cloudflare + custom WAF</strong>: Two layers of bot detection running concurrently</li>
+<li><strong>MLS data refresh cycles</strong>: The site refreshes listings every 15 minutes, which means it's under constant legitimate traffic — and therefore very sensitive to unusual request patterns</li>
+<li><strong>Agent data protections</strong>: Realtor.com has contractual obligations to protect agent contact details from bulk extraction</li>
+</ul>
+<p>This isn't a reason to give up. It's a reason to pick the right tool for the job.</p>
+<h2>Three Approaches, Ranked by Reliability</h2>
+<table>
+<thead>
+<tr>
+<th>Approach</th>
+<th>Reliability</th>
+<th>Setup Time</th>
+<th>Cost</th>
+<th>Best For</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Scraping API (ScraperAPI, ScrapingBee)</td>
+<td>High</td>
+<td>Hours</td>
+<td>$50–200/mo for 10K pages</td>
+<td>Production pipelines, MVPs</td>
+</tr>
+<tr>
+<td>Playwright / headless browser</td>
+<td>Medium–High</td>
+<td>Days</td>
+<td>Infra only (~$20/mo)</td>
+<td>JS-heavy pages, one-time runs</td>
+</tr>
+<tr>
+<td>requests + proxies (DIY)</td>
+<td>Low–Medium</td>
+<td>Days–Weeks</td>
+<td>$7–12/GB residential proxies</td>
+<td>Teams comfortable with maintenance</td>
+</tr>
+</tbody>
+</table>
+<p>In practice, most teams start with a scraping API for the MVP and only consider the DIY route if they're processing millions of pages per month and the economics force the decision.</p>
+<h2>Approach 1: Scraping API + BeautifulSoup</h2>
+<p>A scraping API handles proxy rotation, Cloudflare bypass, and request pacing on your behalf. You send a URL, you get back rendered HTML. The tradeoff is cost per request (~$0.01–0.05); the benefit is that you can ship a working pipeline in an afternoon.</p>
+<p>Here's a production-ready scraper using this pattern:</p>
+<pre><code class="language-python">import requests
+from bs4 import BeautifulSoup
+import json
+import time
+
+API_KEY = &quot;YOUR_SCRAPING_API_KEY&quot;
+BASE_URL = &quot;https://www.realtor.com/realestateandhomes-search/Atlanta_GA/show-newest-listings/sby-6&quot;
+
+def fetch_page(url: str) -&gt; str:
+    &quot;&quot;&quot;Fetches a URL through the scraping API proxy layer.&quot;&quot;&quot;
+    payload = {&quot;api_key&quot;: API_KEY, &quot;url&quot;: url}
+    response = requests.get(&quot;https://api.scraperapi.com&quot;, params=payload, timeout=60)
+    response.raise_for_status()
+    return response.text
+
+def parse_listings(html: str) -&gt; list[dict]:
+    &quot;&quot;&quot;
+    Extracts listing data from search results HTML.
+    Uses data-testid attributes where possible — more stable than class names.
+    &quot;&quot;&quot;
+    soup = BeautifulSoup(html, &quot;lxml&quot;)
+    results = []
+
+    listings = soup.select(&quot;div[class^='BasePropertyCard_propertyCardWrap__']&quot;)
+    for listing in listings:
+        price_el = listing.find(&quot;div&quot;, class_=&quot;card-price&quot;)
+        address_el = listing.find(&quot;div&quot;, class_=&quot;card-address&quot;)
+        url_els = listing.select(&quot;a[class^='LinkComponent_anchor__']&quot;)
+
+        full_address = address_el.get_text(strip=True) if address_el else &quot;&quot;
+        address_parts = full_address.split(&quot;, &quot;)
+
+        results.append({
+            &quot;price&quot;: price_el.get_text(strip=True) if price_el else None,
+            &quot;address&quot;: address_parts[0] if address_parts else None,
+            &quot;city_state&quot;: address_parts[1] if len(address_parts) &gt; 1 else None,
+            &quot;url&quot;: &quot;https://www.realtor.com&quot; + url_els[0][&quot;href&quot;] if url_els else None,
+        })
+
+    return results
+
+def scrape_search_results(num_pages: int = 5) -&gt; list[dict]:
+    all_listings = []
+    seen_urls: set[str] = set()
+
+    for page in range(1, num_pages + 1):
+        url = BASE_URL if page == 1 else f&quot;{BASE_URL}/pg-{page}&quot;
+        print(f&quot;Fetching page {page}: {url}&quot;)
+
+        try:
+            html = fetch_page(url)
+            listings = parse_listings(html)
+
+            for listing in listings:
+                # Deduplicate by URL
+                if listing[&quot;url&quot;] and listing[&quot;url&quot;] in seen_urls:
+                    continue
+                if listing[&quot;url&quot;]:
+                    seen_urls.add(listing[&quot;url&quot;])
+                all_listings.append(listing)
+
+            print(f&quot;  → {len(listings)} listings found (total: {len(all_listings)})&quot;)
+            time.sleep(1)  # Be reasonable
+
+        except requests.RequestException as e:
+            print(f&quot;  → Request failed on page {page}: {e}&quot;)
+            continue
+
+    return all_listings
+
+if __name__ == &quot;__main__&quot;:
+    data = scrape_search_results(num_pages=5)
+    data.append({&quot;total_listings&quot;: len(data)})
+    with open(&quot;realtor_listings.json&quot;, &quot;w&quot;) as f:
+        json.dump(data, f, indent=2)
+    print(f&quot;Done. {len(data) - 1} listings written to realtor_listings.json&quot;)
+</code></pre>
+<p><strong>What this handles:</strong>
+- Proxy rotation and Cloudflare bypass (via the API layer)
+- Pagination with <code>/pg-{n}</code> URL pattern
+- In-memory deduplication by listing URL
+- Atomic JSON export (writes the full file at the end, not per-page)
+- Graceful error handling — a single failed page doesn't kill the run</p>
+<h2>Approach 2: Playwright for JS-Heavy Pages</h2>
+<p>Some Realtor.com pages — particularly individual property detail pages — load critical data client-side. The <code>__NEXT_DATA__</code> tag is present at initial HTML load, but agent phone numbers and some listing details are injected after JavaScript runs.</p>
+<p>For these cases, Playwright is the right tool:</p>
+<pre><code class="language-python">from playwright.sync_api import sync_playwright
+import json
+
+def scrape_property_page(url: str, proxy: dict = None) -&gt; dict:
+    &quot;&quot;&quot;
+    Scrapes an individual Realtor.com property page using Playwright.
+    Pass proxy={'server': 'http://user:pass@host:port'} for residential proxy.
+    &quot;&quot;&quot;
+    launch_args = {&quot;headless&quot;: True}
+    if proxy:
+        launch_args[&quot;proxy&quot;] = proxy
+
+    with sync_playwright() as p:
+        browser = p.chromium.launch(**launch_args)
+        context = browser.new_context(
+            user_agent=&quot;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36&quot;
+        )
+        page = context.new_page()
+        page.goto(url, wait_until=&quot;networkidle&quot;, timeout=30000)
+
+        # Extract the __NEXT_DATA__ JSON blob
+        next_data_content = page.evaluate(
+            &quot;() =&gt; document.getElementById('__NEXT_DATA__')?.textContent&quot;
+        )
+
+        browser.close()
+
+        if not next_data_content:
+            return {}
+
+        return json.loads(next_data_content)
+
+# Usage:
+# data = scrape_property_page(
+#     &quot;https://www.realtor.com/realestateandhomes-detail/...&quot;,
+#     proxy={&quot;server&quot;: &quot;http://user:pass@residential-proxy:8080&quot;}
+# )
+</code></pre>
+<p>The <code>wait_until="networkidle"</code> parameter tells Playwright to wait until network activity settles before extracting content. This catches late-loading data but adds 3–5 seconds per page — factor that into your throughput estimates.</p>
+<p>Install Playwright with: <code>pip install playwright &amp;&amp; playwright install chromium</code></p>
+<h2>Handling the CSS Selector Problem</h2>
+<p>Realtor.com's class names are generated at build time (e.g., <code>BasePropertyCard_propertyCardWrap__3Y8X2</code>). The prefix is stable; the hash suffix changes with each frontend deployment. This is why scrapers break silently every few weeks.</p>
+<p>Two strategies that actually hold up:</p>
+<p><strong>Use <code>data-testid</code> and <code>data-label</code> attributes.</strong> These are set by engineers for testing purposes and change far less frequently than generated class names.</p>
+<pre><code class="language-python"># Fragile: hash suffix changes on every deploy
+soup.select(&quot;div[class^='BasePropertyCard_propertyCardWrap__']&quot;)
+
+# More stable: testid attributes tied to component semantics
+soup.select(&quot;li[data-testid='result-card']&quot;)
+soup.select(&quot;[data-label='pc-price']&quot;)
+soup.select(&quot;[data-label='pc-address']&quot;)
+</code></pre>
+<p><strong>Parse <code>__NEXT_DATA__</code> instead of HTML.</strong> The JSON structure inside the Next.js data blob is versioned separately from the UI and tends to be more stable. When you can, prefer the JSON path over the HTML path.</p>
+<p>A practical rule: if your selectors are based on class names with hash suffixes, set a calendar reminder to validate them monthly. Realtor.com deploys frontend updates roughly every 4–6 weeks.</p>
+<h2>Pagination</h2>
+<p>Realtor.com's URL pattern for paginated search results is straightforward:</p>
+<pre><code>Page 1: /realestateandhomes-search/Atlanta_GA/show-newest-listings/sby-6
+Page 2: /realestateandhomes-search/Atlanta_GA/show-newest-listings/sby-6/pg-2
+Page N: /realestateandhomes-search/Atlanta_GA/show-newest-listings/sby-6/pg-{N}
+</code></pre>
+<p>Search results pages cap at around <span style="color: #2D6A4F; font-weight: bold;">200 results per search query</span>. If you need more than that for a given market, split the query by filter combinations: price range, property type, beds. Each filter combination gives you another 200-result window.</p>
+<h2>Data You'll Actually Get</h2>
+<p>Here's what's reliably extractable from search results pages versus property detail pages:</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Search Results</th>
+<th>Property Detail</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Listing price</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Street address</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Beds / baths</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Square footage</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Lot size</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Listing URL</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>MLS number</td>
+<td>No</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Listing agent name</td>
+<td>No</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Agent phone number</td>
+<td>No</td>
+<td>Yes (JS-loaded)</td>
+</tr>
+<tr>
+<td>Price history</td>
+<td>No</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Open house schedule</td>
+<td>No</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Days on market</td>
+<td>No</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>School district</td>
+<td>No</td>
+<td>Yes</td>
+</tr>
+</tbody>
+</table>
+<p>For most analysis use cases — price tracking, market comparisons, investment screening — search results data is sufficient. Pull property detail pages only when you specifically need MLS numbers or agent contact data.</p>
+<h2>What Good Output Looks Like</h2>
+<p>A well-structured output file for Realtor.com listings:</p>
+<pre><code class="language-json">[
+  {
+    &quot;price&quot;: &quot;$485,000&quot;,
+    &quot;address&quot;: &quot;1234 Peachtree St NE&quot;,
+    &quot;city_state&quot;: &quot;Atlanta, GA 30309&quot;,
+    &quot;url&quot;: &quot;https://www.realtor.com/realestateandhomes-detail/...&quot;,
+    &quot;beds&quot;: &quot;3&quot;,
+    &quot;baths&quot;: &quot;2&quot;,
+    &quot;sqft&quot;: &quot;1,850&quot;,
+    &quot;lot_size&quot;: &quot;0.12 acres&quot;
+  },
+  ...
+  {
+    &quot;total_listings&quot;: 127
+  }
+]
+</code></pre>
+<p>Every run should produce the same structure. Treat the schema as a contract — if you add or rename a field, update downstream code in the same commit.</p>
+<h2>Common Failure Modes</h2>
+<p><strong>Empty results / only Cloudflare HTML returned.</strong> Your proxy layer isn't working or the API key is invalid. Test with a single URL first, inspect the raw HTML response before parsing.</p>
+<p><strong>Selectors return <code>None</code> for everything.</strong> Realtor.com deployed a frontend update. Check the page HTML manually, find the new class prefix or <code>data-testid</code> attributes, update selectors.</p>
+<p><strong>Pagination stops early.</strong> You've hit the 200-result cap. Split your query by filter dimensions.</p>
+<p><strong>Rate limiting / increasing block rate.</strong> You're sending requests too fast. Add <code>time.sleep(1)</code> between pages, reduce batch size, or verify your proxy rotation is actually working.</p>
+<p><strong>Missing beds/baths on some listings.</strong> Some listings genuinely don't have this data (commercial, land). Use safe defaults in your normalization function — don't let a missing field crash the run.</p>
+<h2>FAQ</h2>
+<p><strong>Is it legal to scrape Realtor.com?</strong>
+This depends on jurisdiction, intended use, and how you handle the data. Realtor.com's ToS restricts bulk automated access. For personal research or internal analysis, scraping publicly visible data is generally lower risk than commercial redistribution. Always review the ToS and applicable laws for your specific situation. If you need data for a commercial product, look into whether Realtor.com offers a data licensing agreement.</p>
+<p><strong>Why does my script fail immediately with a Cloudflare error?</strong>
+Direct <code>requests.get()</code> calls hit Cloudflare's bot detection before they reach any listing data. You need either a scraping API (which handles Cloudflare bypass for you) or a headless browser with residential proxy rotation. Free proxies don't work reliably against Cloudflare — use residential proxies from a provider with a rotating IP pool.</p>
+<p><strong>How often should I re-run my scraper?</strong>
+Realtor.com updates listings every 15 minutes, but for most use cases daily or weekly runs are sufficient. If you're tracking price changes on a specific set of properties, daily makes sense. If you're building a static market analysis dataset, weekly is fine. Running more frequently than you actually need wastes proxy credits and increases your ban risk.</p>
+<p><strong>How do I get more than 200 results for a city?</strong>
+Split your query by filter combinations. For example: <code>price_min=200000&amp;price_max=400000</code>, then <code>price_min=400000&amp;price_max=600000</code>, and so on. Each filter slice gives you a fresh 200-result window. Property type, beds, and listing age are also useful split dimensions.</p>
+<p><strong>What's the difference between scraping <code>__NEXT_DATA__</code> versus parsing HTML?</strong>
+<code>__NEXT_DATA__</code> is a JSON object that Next.js embeds in the page HTML at render time, containing the same data that populates the visible listing cards. Parsing it means you're working with a structured data object rather than fragile CSS selectors. The tradeoff is that the JSON schema can also change across deploys — it's just less frequent than UI class name changes. When both options are available, prefer the JSON path.</p>
+<p><strong>Which scraping library should I use for Realtor.com?</strong>
+For getting started quickly: a scraping API (ScraperAPI, ScrapingBee) + BeautifulSoup. For production scale with JS-rendered pages: Playwright with residential proxies. For very large volume: Scrapy with a proxy middleware and a scraping API as the fetch layer. Avoid Selenium for new projects — Playwright is strictly better.</p>
+<p><strong>How do I avoid re-scraping listings I already have?</strong>
+Deduplicate on listing URL or MLS number. Store seen identifiers in a SQLite table or a flat file. Before writing any new record, check against the seen set. This is especially important if you're running incremental scrapes — without deduplication, your dataset inflates silently and downstream analysis gets skewed.</p>
+</body>
+</html>

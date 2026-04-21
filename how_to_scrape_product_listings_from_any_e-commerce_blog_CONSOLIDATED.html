@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <title><h2>SEO Metadata</h2></title>
+    
+<style>
+    body { 
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+        line-height: 1.6; 
+        max-width: 800px; 
+        margin: 40px auto; 
+        padding: 0 20px; 
+        color: #333; 
+    }
+    h1, h2, h3 { 
+        color: #111; 
+        margin-top: 1.5em; 
+        text-transform: uppercase; 
+        letter-spacing: 0.5px; 
+        border-bottom: 2px solid #2D6A4F;
+        padding-bottom: 5px;
+    }
+    pre { 
+        background-color: #1e1e1e; 
+        color: #d4d4d4; 
+        padding: 16px; 
+        border-radius: 6px; 
+        overflow-x: auto; 
+        font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace; 
+        font-size: 14px; 
+        margin: 20px 0;
+    }
+    code { 
+        font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace; 
+    }
+    p code {
+        background-color: #f6f8fa; 
+        padding: 0.2em 0.4em; 
+        border-radius: 3px; 
+        font-size: 85%;
+        color: #2D6A4F;
+    }
+    table {
+        border-collapse: collapse;
+        width: 100%;
+        margin: 20px 0;
+    }
+    th, td {
+        border: 1px solid #ddd;
+        padding: 12px;
+        text-align: left;
+    }
+    th {
+        background-color: #f8f9fa;
+    }
+</style>
+
+</head>
+<body>
+    <h2>SEO Metadata</h2>
+<p>Primary Keyword: ecommerce scraping
+Meta Title: Ecommerce Scraping With Python: Full Guide
+Meta Description: Master ecommerce scraping with Python. Handle JS-rendered sites, bypass anti-bot systems, paginate, and export clean product data. Build pipelines that last.</p>
+<hr />
+<h2>LinkedIn Post</h2>
+<p>Most e-commerce scrapers fail not because of bad code, but because they were built for one site, one day, one CSS class that no longer exists.</p>
+<p>That is the core problem with how most people approach this. They write a script, it works, they move on. Then the site updates its layout, or deploys Cloudflare, or switches to a React storefront, and the whole thing silently falls apart.</p>
+<p>Building a scraper that actually holds up across sites requires thinking through a few things most tutorials skip: how to handle JS-rendered product grids that return empty HTML to a plain requests call, how to deal with anti-bot systems that fingerprint headless browsers regardless of what User-Agent you set, and how to manage pagination across sites that use infinite scroll instead of URL parameters.</p>
+<p>There is also the selector fragility problem. Class names change. Sites A/B test layouts. A scraper that works today can fail quietly next week. Defensive parsing with fallbacks is not optional for anything you want to run on a schedule.</p>
+<p>The post I linked below walks through all of it in detail: static HTML scraping, Playwright for JS-heavy storefronts, anti-bot handling, pagination, AI-based extraction for multi-site pipelines, and production considerations like deduplication and atomic CSV writes.</p>
+<p>If you are building anything that needs to pull product data reliably, not just once, it is worth the read.</p>
+<p>Full guide at scrapebadger.com</p>
+<hr />
+<h2>Twitter Thread</h2>
+<p>Most scrapers break the week after you build them.
+New CSS class. Cloudflare. React storefront.</p>
+<p>Here is how to build one that actually holds up.</p>
+<p>Read the full guide: scrapebadger.com</p>
+<hr />
+<h2>Blog Cover Image</h2>
+<p><img alt="Cover Image" src="/Users/milijonierius/Desktop/Domo workflow/how_to_scrape_product_listings_from_any_e-commerce_blog_cover.png" /></p>
+<hr />
+<h1>How to Scrape Product Listings from Any E-commerce Website with Python</h1>
+<p>Most e-commerce scraping tutorials show you how to pull data from one specific site, with hardcoded selectors that break the moment the site updates its CSS. That's not a pipeline — that's a one-time script with an expiration date.</p>
+<p>This guide covers how to build a scraper that works across e-commerce sites, handles the two main content types you'll encounter (static HTML and JavaScript-rendered storefronts), and holds up when sites push back. By the end, you'll have a working Python pipeline that extracts product names, prices, availability, and ratings — exportable to CSV or a database.</p>
+<hr />
+<h2>What You're Actually Up Against</h2>
+<p>Before writing a single line of code, it helps to understand why e-commerce scraping fails more often than it should.</p>
+<p>The problem isn't parsing HTML. That part is easy. The hard parts are:</p>
+<p><strong>JS-rendered content.</strong> A large percentage of modern storefronts — anything built on React, Vue, or similar — render product grids client-side. If you fetch the raw HTML with <code>requests</code>, you get a shell with no product data in it. You'll see <code>&lt;div id="app"&gt;&lt;/div&gt;</code> and nothing useful.</p>
+<p><strong>Anti-bot systems.</strong> Amazon uses its own detection stack. Cloudflare protects a significant portion of mid-tier retailers. DataDome is common on fashion and luxury sites. These systems fingerprint your requests and block scrapers that look like scrapers — which a basic <code>requests</code> call absolutely does.</p>
+<p><strong>Pagination and lazy loading.</strong> Product listings rarely fit on one page. Some sites use traditional <code>?page=2</code> URLs. Others use infinite scroll triggered by a scroll event. Both require different handling.</p>
+<p><strong>Selector fragility.</strong> CSS class names change. Sites A/B test layouts. A scraper that works today can fail silently next week because <code>.product-card</code> became <code>.product-tile</code>. You need defensive parsing with fallbacks, not hardcoded assumptions.</p>
+<p>If you're <a href="https://scrapebadger.com/blog/web-scraping-for-beginners-the-only-tool-guide-you-need-in-2026">new to web scraping tools in general</a>, it's worth understanding the full landscape before diving into e-commerce specifically — the same infrastructure problems apply across all domains.</p>
+<hr />
+<h2>The Two Approaches You Need to Know</h2>
+<h3>Static HTML Scraping (Requests + BeautifulSoup)</h3>
+<p>Works for: product pages and category listings that render fully server-side. Think older storefronts, smaller retailers, and sites that haven't migrated to SPAs yet.</p>
+<p>The pattern is simple:</p>
+<pre><code class="language-python">import requests
+from bs4 import BeautifulSoup
+
+headers = {
+    &quot;User-Agent&quot;: &quot;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120.0 Safari/537.36&quot;
+}
+
+response = requests.get(&quot;https://example-shop.com/category/shoes&quot;, headers=headers)
+soup = BeautifulSoup(response.text, &quot;html.parser&quot;)
+
+products = []
+for card in soup.find_all(&quot;div&quot;, class_=&quot;product-card&quot;):
+    name = card.find(&quot;h2&quot;, class_=&quot;product-name&quot;)
+    price = card.find(&quot;span&quot;, class_=&quot;price&quot;)
+    products.append({
+        &quot;name&quot;: name.get_text(strip=True) if name else None,
+        &quot;price&quot;: price.get_text(strip=True) if price else None,
+    })
+
+print(products)
+</code></pre>
+<p>A few things that matter here:</p>
+<ul>
+<li><strong>Always set a User-Agent header.</strong> Without one, you're broadcasting that you're a bot.</li>
+<li><strong>Use <code>try/except</code> or conditional checks</strong> for every field. Missing elements are normal — products without prices, listings without ratings. Don't let a single <code>None</code> crash your loop.</li>
+<li><strong>The class names above are placeholders.</strong> Every site uses different ones. Inspect the actual HTML before writing selectors.</li>
+</ul>
+<p>For pagination, check whether the site uses URL-based pages:</p>
+<pre><code class="language-python">for page in range(1, 6):
+    url = f&quot;https://example-shop.com/category/shoes?page={page}&quot;
+    response = requests.get(url, headers=headers)
+    # parse as above
+</code></pre>
+<h3>JavaScript-Rendered Storefronts</h3>
+<p>For sites that load product data dynamically, you need a browser. The two main options are Selenium (older, more documentation) and Playwright (faster, cleaner API). Here's a minimal Playwright example:</p>
+<pre><code class="language-python">from playwright.sync_api import sync_playwright
+
+with sync_playwright() as p:
+    browser = p.chromium.launch(headless=True)
+    page = browser.new_page()
+    page.goto(&quot;https://example-shop.com/products&quot;)
+
+    # Wait for product grid to load before extracting
+    page.wait_for_selector(&quot;.product-grid&quot;)
+
+    products = []
+    for card in page.query_selector_all(&quot;.product-card&quot;):
+        name = card.query_selector(&quot;.product-name&quot;)
+        price = card.query_selector(&quot;.price&quot;)
+        products.append({
+            &quot;name&quot;: name.inner_text() if name else None,
+            &quot;price&quot;: price.inner_text() if price else None,
+        })
+
+    browser.close()
+    print(products)
+</code></pre>
+<p>Install with <code>pip install playwright &amp;&amp; playwright install chromium</code>.</p>
+<p>The <code>wait_for_selector</code> call is critical. Without it, you're extracting from a half-loaded page and wondering why your data is empty.</p>
+<hr />
+<h2>Using a Scraping API for Sites That Block You</h2>
+<p>Headless browsers work until a site deploys Cloudflare, Akamai, or DataDome. At that point, you're in an arms race you're going to lose. Browser fingerprinting is sophisticated enough to detect Playwright and Selenium regardless of what User-Agent you set.</p>
+<p>The practical solution for production pipelines is to route requests through a scraping API that handles anti-bot bypass, proxy rotation, and JS rendering on its end. You get back clean HTML. You parse it. You're done.</p>
+<p><a href="https://docs.scrapebadger.com/web-scraping/overview">ScrapeBadger's web scraping endpoint</a> at <code>POST https://scrapebadger.com/v1/web/scrape</code> handles this. The minimal call for a JS-heavy product listing page:</p>
+<pre><code class="language-python">import requests
+from bs4 import BeautifulSoup
+
+response = requests.post(
+    &quot;https://scrapebadger.com/v1/web/scrape&quot;,
+    headers={
+        &quot;x-api-key&quot;: &quot;YOUR_API_KEY&quot;,
+        &quot;Content-Type&quot;: &quot;application/json&quot;
+    },
+    json={
+        &quot;url&quot;: &quot;https://example-shop.com/products&quot;,
+        &quot;format&quot;: &quot;html&quot;,
+        &quot;render_js&quot;: True,
+        &quot;wait_for&quot;: &quot;.product-grid&quot;,
+        &quot;anti_bot&quot;: True,
+        &quot;escalate&quot;: True,
+        &quot;country&quot;: &quot;us&quot;
+    }
+)
+
+html = response.json()[&quot;content&quot;]
+soup = BeautifulSoup(html, &quot;html.parser&quot;)
+
+# Parse normally from here
+</code></pre>
+<p>What's happening with each parameter:</p>
+<ul>
+<li><code>render_js: True</code> — runs the page in a full browser so JS-rendered products appear in the HTML</li>
+<li><code>wait_for: ".product-grid"</code> — waits until the product grid is present before extracting, same logic as <code>wait_for_selector</code> in Playwright</li>
+<li><code>anti_bot: True</code> — activates the anti-bot solver for protected sites</li>
+<li><code>escalate: True</code> — automatically steps up from HTTP to browser to premium browser if earlier tiers get blocked. You only pay for the tier that succeeds.</li>
+<li><code>country: "us"</code> — routes through US proxies, useful for geo-restricted pricing or regional product catalogs</li>
+</ul>
+<p>For lazy-loaded pages where products appear as you scroll, add <code>wait_after_load</code>:</p>
+<pre><code class="language-python">json={
+    &quot;url&quot;: &quot;https://example-shop.com/products&quot;,
+    &quot;render_js&quot;: True,
+    &quot;wait_after_load&quot;: 2000  # ms to wait after initial load
+}
+</code></pre>
+<hr />
+<h2>Handling Pagination Programmatically</h2>
+<p>Whether you're using <code>requests</code> or a scraping API, pagination logic is the same: loop over pages, collect product links, scrape each one.</p>
+<pre><code class="language-python">import requests
+from bs4 import BeautifulSoup
+
+API_KEY = &quot;YOUR_API_KEY&quot;
+BASE_URL = &quot;https://example-shop.com/category/laptops&quot;
+product_links = []
+
+def fetch_page(url):
+    resp = requests.post(
+        &quot;https://scrapebadger.com/v1/web/scrape&quot;,
+        headers={&quot;x-api-key&quot;: API_KEY, &quot;Content-Type&quot;: &quot;application/json&quot;},
+        json={&quot;url&quot;: url, &quot;format&quot;: &quot;html&quot;, &quot;render_js&quot;: True, &quot;anti_bot&quot;: True}
+    )
+    return BeautifulSoup(resp.json()[&quot;content&quot;], &quot;html.parser&quot;)
+
+# Collect product links across pages
+for page in range(1, 6):
+    url = f&quot;{BASE_URL}?page={page}&quot;
+    soup = fetch_page(url)
+    for link in soup.find_all(&quot;a&quot;, class_=&quot;product-link&quot;):
+        href = link.get(&quot;href&quot;)
+        if href and href not in product_links:
+            product_links.append(&quot;https://example-shop.com&quot; + href)
+
+print(f&quot;Found {len(product_links)} products&quot;)
+</code></pre>
+<p>For infinite scroll pages, use <code>js_scenario</code> to simulate scrolling before extraction:</p>
+<pre><code class="language-python">json={
+    &quot;url&quot;: &quot;https://example-shop.com/products&quot;,
+    &quot;render_js&quot;: True,
+    &quot;js_scenario&quot;: [
+        {&quot;type&quot;: &quot;scroll&quot;, &quot;direction&quot;: &quot;down&quot;, &quot;amount&quot;: 2000},
+        {&quot;type&quot;: &quot;wait&quot;, &quot;milliseconds&quot;: 1500},
+        {&quot;type&quot;: &quot;scroll&quot;, &quot;direction&quot;: &quot;down&quot;, &quot;amount&quot;: 2000},
+        {&quot;type&quot;: &quot;wait&quot;, &quot;milliseconds&quot;: 1500}
+    ]
+}
+</code></pre>
+<hr />
+<h2>AI Extraction: Skip the Selector Hunting</h2>
+<p>If you're scraping many different e-commerce sites and don't want to write site-specific CSS selectors for each one, the <code>ai_extract</code> option is worth knowing about. Instead of figuring out whether the price lives in <code>.product-action__price</code> or <code>.price-wrapper</code> or <code>[data-price]</code>, you describe what you want in plain language:</p>
+<pre><code class="language-python">json={
+    &quot;url&quot;: &quot;https://example-shop.com/category/headphones&quot;,
+    &quot;format&quot;: &quot;html&quot;,
+    &quot;render_js&quot;: True,
+    &quot;ai_extract&quot;: True,
+    &quot;ai_prompt&quot;: &quot;Extract all products. For each product return: name, price, currency, rating, availability, and URL.&quot;
+}
+</code></pre>
+<p>The response includes a structured <code>ai_extraction</code> field with the parsed data. This costs <span style="color: #2D6A4F; font-weight: bold;">+2 credits</span> on top of the base rendering cost, but it eliminates the selector maintenance problem entirely for multi-site pipelines.</p>
+<hr />
+<h2>Normalizing and Exporting Product Data</h2>
+<p>Raw scraped data is inconsistent. Prices come back as <code>"$29.99"</code>, <code>"29,99 €"</code>, or <code>"From $25"</code>. Ratings might be <code>"4.5 out of 5"</code> or just <code>"4.5"</code>. Normalize before you store.</p>
+<pre><code class="language-python">import csv
+import re
+
+def normalize_product(raw: dict) -&gt; dict:
+    # Clean price — strip currency symbols and whitespace
+    raw_price = raw.get(&quot;price&quot;) or &quot;&quot;
+    price_clean = re.sub(r&quot;[^\d.]&quot;, &quot;&quot;, raw_price.replace(&quot;,&quot;, &quot;.&quot;))
+
+    return {
+        &quot;name&quot;: str(raw.get(&quot;name&quot;) or &quot;&quot;).strip(),
+        &quot;price&quot;: float(price_clean) if price_clean else None,
+        &quot;currency&quot;: &quot;USD&quot;,  # Set per-site if scraping internationally
+        &quot;rating&quot;: str(raw.get(&quot;rating&quot;) or &quot;&quot;).strip() or None,
+        &quot;availability&quot;: str(raw.get(&quot;availability&quot;) or &quot;&quot;).strip() or None,
+        &quot;url&quot;: str(raw.get(&quot;url&quot;) or &quot;&quot;).strip(),
+    }
+
+# Write to CSV
+CSV_COLUMNS = [&quot;name&quot;, &quot;price&quot;, &quot;currency&quot;, &quot;rating&quot;, &quot;availability&quot;, &quot;url&quot;]
+
+def export_to_csv(products: list, out_path: str):
+    tmp = out_path + &quot;.tmp&quot;
+    with open(tmp, &quot;w&quot;, newline=&quot;&quot;, encoding=&quot;utf-8&quot;) as f:
+        writer = csv.DictWriter(f, fieldnames=CSV_COLUMNS)
+        writer.writeheader()
+        for p in products:
+            writer.writerow(normalize_product(p))
+    import os
+    os.replace(tmp, out_path)  # Atomic write — no partial CSVs
+</code></pre>
+<p>The atomic write pattern (write to <code>.tmp</code>, then rename) prevents half-written files if the process is interrupted. Same principle applies whether you're writing CSV or inserting into a database.</p>
+<hr />
+<h2>Scraping Engine Selection: When to Use What</h2>
+<table>
+<thead>
+<tr>
+<th>Site Type</th>
+<th>Engine</th>
+<th>Cost Per Request</th>
+<th>When to Use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Static HTML, no JS</td>
+<td>HTTP (auto)</td>
+<td>1 credit</td>
+<td>Small retailers, older storefronts</td>
+</tr>
+<tr>
+<td>React/Vue/Angular storefront</td>
+<td>Browser (<code>render_js: true</code>)</td>
+<td>5 credits</td>
+<td>Most modern e-commerce sites</td>
+</tr>
+<tr>
+<td>Cloudflare / DataDome protected</td>
+<td>Premium Browser (via escalation)</td>
+<td>10 credits</td>
+<td>Amazon, major fashion brands, luxury retail</td>
+</tr>
+<tr>
+<td>AI-structured extraction needed</td>
+<td>Browser + AI</td>
+<td>7 credits</td>
+<td>Multi-site pipelines, LLM integration</td>
+</tr>
+</tbody>
+</table>
+<p>The <span style="color: #2D6A4F; font-weight: bold;">escalate: true</span> flag handles tier selection automatically. You don't need to know in advance which tier a site requires — ScrapeBadger steps up as needed and you pay for whatever tier actually worked.</p>
+<hr />
+<h2>Common Failure Modes (and What to Do)</h2>
+<p><strong>Empty product grid.</strong> The page loaded but the product HTML is absent. Usually means JS rendering wasn't enabled or <code>wait_for</code> fired too early. Add <code>wait_after_load: 2000</code> and check that your <code>wait_for</code> selector is actually present on the page.</p>
+<p><strong>Partial data — some products missing fields.</strong> Normal. Use <code>try/except</code> or conditional field access everywhere. Never assume a field exists.</p>
+<p><strong>IP blocks / 403s.</strong> Your requests are being identified and rejected. Switch to a scraping API with proxy rotation, or add <code>anti_bot: true</code> if already using one.</p>
+<p><strong>Pagination stops working after page 3.</strong> Some sites use session cookies for pagination. Use <code>session_id</code> to maintain a persistent session across requests:</p>
+<pre><code class="language-python">json={
+    &quot;url&quot;: f&quot;https://example-shop.com/products?page={page}&quot;,
+    &quot;session_id&quot;: &quot;my-scrape-session-001&quot;
+}
+</code></pre>
+<p><strong>Prices showing wrong currency or region.</strong> Use the <code>country</code> parameter to route through proxies in the target region:</p>
+<pre><code class="language-python">json={
+    &quot;url&quot;: &quot;https://example-shop.com/products&quot;,
+    &quot;country&quot;: &quot;gb&quot;  # Route through UK proxies for GBP pricing
+}
+</code></pre>
+<hr />
+<h2>What This Looks Like in Production</h2>
+<p>If you're running this as a scheduled job — daily price monitoring, weekly catalog sync — the operational requirements are similar to any other data pipeline:</p>
+<ul>
+<li><strong>Cap each run.</strong> Decide how many pages you're collecting per run. Unbounded jobs create unpredictable credit usage and long runtime.</li>
+<li><strong>Deduplicate by product URL or SKU.</strong> Products reappear across pages. A product URL is a stable key for deduplication.</li>
+<li><strong>Log per run:</strong> products collected, pages scraped, failures, runtime. Alert if output drops to zero — it usually means something broke, not that the store is empty.</li>
+<li><strong>Store raw HTML alongside parsed data.</strong> When your selectors break (they will), you want to reprocess from stored HTML rather than re-scrape everything.</li>
+</ul>
+<p>For a broader look at the real cost tradeoffs between building scraping infrastructure yourself versus using a managed API, <a href="https://scrapebadger.com/blog/scrapebadger-vs-diy-scraping-infrastructure-the-real-cost-comparison">this comparison</a> is worth reading before you architect anything.</p>
+<hr />
+<h2>FAQ</h2>
+<p><strong>What Python libraries do I need to scrape e-commerce product listings?</strong></p>
+<p>For static sites: <code>requests</code> and <code>BeautifulSoup</code> (<code>beautifulsoup4</code>). For JS-rendered sites: <code>playwright</code> or <code>selenium</code>. For production pipelines that need anti-bot handling, route through a scraping API and use only <code>requests</code> to call it — the library handles rendering and proxies on its end.</p>
+<p><strong>How do I scrape a site built with React or Vue?</strong></p>
+<p>You need a headless browser to execute the JavaScript before extracting HTML. Use Playwright's <code>wait_for_selector()</code> or set <code>render_js: true</code> with a <code>wait_for</code> CSS selector when calling a scraping API. Never try to parse the raw HTML from a React app — you'll get nothing useful.</p>
+<p><strong>How do I handle Cloudflare or other anti-bot protection?</strong></p>
+<p>Don't try to bypass Cloudflare manually with headers or cookie manipulation — it's a time sink and the detection is significantly more sophisticated than User-Agent checks. Use a scraping API that handles anti-bot bypass natively, or set <code>anti_bot: true</code> with <code>escalate: true</code> in ScrapeBadger's <a href="https://docs.scrapebadger.com/api-reference/endpoint/web-scraping/scrape"><code>/v1/web/scrape</code></a> endpoint.</p>
+<p><strong>How do I scrape product listings across multiple pages?</strong></p>
+<p>If the site uses URL-based pagination (<code>?page=2</code>, <code>?pg=3</code>), loop over page numbers and collect product links before scraping each one. For infinite scroll, use <code>js_scenario</code> with scroll actions to trigger lazy-loaded content before extracting. Always deduplicate collected URLs — products can appear on multiple pages.</p>
+<p><strong>Is it legal to scrape e-commerce websites?</strong></p>
+<p>It depends on jurisdiction, the site's terms of service, and how you use the data. Scraping publicly visible product data for price research or catalog enrichment is common practice and generally considered acceptable. Scraping at volumes that affect site performance, scraping behind authentication, or redistributing scraped data commercially introduces legal risk. Always check <code>robots.txt</code> and the site's ToS, and consult legal advice for commercial applications at scale.</p>
+<p><strong>How do I avoid duplicate products in my output?</strong></p>
+<p>Use the product URL or SKU as a unique key. In-memory deduplication with a Python <code>set</code> works fine for a single run. For incremental jobs that run on a schedule, persist seen product URLs in a database or checkpoint file and check against it at the start of each run.</p>
+<p><strong>How much does it cost to scrape 10,000 product pages?</strong></p>
+<p>Using ScrapeBadger: static HTML pages cost <span style="color: #2D6A4F; font-weight: bold;">1 credit each</span> (10,000 credits total), JS-rendered pages cost <span style="color: #2D6A4F; font-weight: bold;">5 credits each</span> (50,000 credits), and anti-bot solver adds <span style="color: #2D6A4F; font-weight: bold;">+5 credits per request</span>. In practice, most catalogs mix static and dynamic pages, so the real number lands somewhere in between. Failed requests cost nothing.</p>
+</body>
+</html>

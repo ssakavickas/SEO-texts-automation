@@ -1,0 +1,3 @@
+Primary Keyword: how to build a web scraper
+Meta Title: How to Build a Web Scraper vs Managed APIs
+Meta Description: Learn how to build a web scraper and why DIY costs 3–10x more than expected. Compare real costs, failure modes, and when a managed API wins.

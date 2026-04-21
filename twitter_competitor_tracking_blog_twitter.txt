@@ -1,0 +1,7 @@
+Most startups are missing warm leads hiding in plain sight on Twitter.
+
+- Buying-intent queries surface in-market prospects in real time
+- Profile prospects before outreach to avoid generic, ignored replies
+- A basic webhook pipeline costs under $50/month to run
+
+Read the full guide: scrapebadger.com

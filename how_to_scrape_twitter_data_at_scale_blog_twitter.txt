@@ -1,0 +1,6 @@
+Scraping 100 tweets is easy.
+Scraping 50,000 per week without losing data is a different problem entirely.
+
+Pagination gaps, schema drift, silent duplicates — none of this shows up until scale does.
+
+Read the full guide: scrapebadger.com

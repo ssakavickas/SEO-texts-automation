@@ -1,0 +1,7 @@
+Most scrapers don't need a headless browser.
+They need to check the Network tab first.
+
+Hidden API endpoints. Embedded JSON. TLS fingerprinting.
+Browser rendering is the last resort, not the starting point.
+
+Read the full guide: scrapebadger.com

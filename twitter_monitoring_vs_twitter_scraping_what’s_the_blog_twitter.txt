@@ -1,0 +1,7 @@
+Twitter scraping and monitoring are not the same tool. Using the wrong one costs you money or data.
+
+- Scraping pulls on demand, great for history and batch work
+- Monitoring pushes in real-time, zero gaps, specific accounts
+- Pricing differs entirely: per request vs per account per day
+
+Read the full guide: scrapebadger.com

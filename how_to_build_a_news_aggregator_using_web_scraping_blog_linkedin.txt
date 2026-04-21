@@ -1,0 +1,13 @@
+Most people who build a news aggregator think the hard part is writing the parser. It isn't.
+
+The hard part is building something that still works next Tuesday, when the first site quietly renames a CSS class, the second starts returning 403s, and the third syndicates the same Reuters story your other four sources already grabbed.
+
+The pipeline breaks not because the code was wrong, but because it was written as if the web stays still.
+
+The smarter approach is to stop thinking in scripts and start thinking in stages: fetch, parse, normalize, deduplicate, export. Each layer has one job. When something fails, you know exactly where to look. A fetch error and a schema mismatch are different problems with different fixes, and collapsing them into one tangled function means debugging both at once.
+
+A few things that actually matter in practice: write source-specific parsers instead of one universal extractor, normalize URLs before deduplication or you'll miss obvious duplicates, and use an atomic write pattern when exporting so a mid-run crash doesn't corrupt your output file.
+
+None of this is complicated. But the difference between a scraper that runs once and a pipeline you can trust on a schedule is almost entirely in these details.
+
+If you want the full working code with schema design, deduplication logic, failure mode handling, and scheduling setup, the complete guide is at scrapebadger.com

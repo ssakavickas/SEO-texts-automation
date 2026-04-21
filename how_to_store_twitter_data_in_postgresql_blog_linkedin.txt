@@ -1,0 +1,13 @@
+Most people hit the same wall at the same moment: a CSV file with 50,000 tweets, a question that needs a real answer, and no clean way to get there.
+
+That is when you realize a spreadsheet was never a data store. It was just a delay.
+
+PostgreSQL is the right move for serious Twitter data work, and the reasons are more specific than "it scales." Tweet IDs are 64-bit integers that sort chronologically by design. Storing them as strings quietly breaks that. The JSONB column type means you can keep the raw payload intact, so when Twitter's schema changes six months from now, your historical data is still reprocessable. And ON CONFLICT DO NOTHING makes deduplication a database concern instead of something your application has to babysit.
+
+The schema decisions matter more than people expect. A two-table setup with tweets and users, a keyword column to track which search produced each result, and a raw JSONB fallback for fields that do not fit neatly into columns, covers most real-world monitoring needs without overengineering.
+
+The part that trips people up most often is insert order. Users before tweets, every time, or the foreign key constraint will take down the whole batch. It is a simple rule that causes a lot of confusion until you have seen it fail once.
+
+If you are collecting Twitter data for anything beyond a one-time export, the full schema, ingestion pipeline, and query examples are worth reading through carefully.
+
+scrapebadger.com

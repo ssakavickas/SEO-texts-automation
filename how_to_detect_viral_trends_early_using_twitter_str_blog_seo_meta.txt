@@ -1,0 +1,3 @@
+Primary Keyword: detect viral trends Twitter
+Meta Title: Detect Viral Twitter Trends Early With Streaming APIs
+Meta Description: Learn how to detect viral Twitter trends before they peak using velocity signals, filter rules, and WebSocket streams. Build a real-time trend detection pipeline today.

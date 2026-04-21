@@ -1,0 +1,13 @@
+Most real estate scrapers fail before they see a single listing.
+
+Realtor.com runs Cloudflare plus a custom WAF, and a plain requests.get() call returns a bot challenge page roughly 90% of the time. That trips up a lot of people who assume the hard part is parsing the data. It is not. The hard part is getting the HTML in the first place.
+
+Here is what most guides miss: Realtor.com embeds its full property dataset inside a __NEXT_DATA__ script tag on every page. That means instead of hunting through fragile CSS selectors that break every time the frontend deploys, you parse one clean JSON blob. The data is already structured. You just have to reach it.
+
+The other thing worth knowing is the 200-result cap on search queries. If you need broader market coverage, you split queries by price range, property type, or bedroom count. Each filter slice gives you another 200-result window. It is not elegant, but it works.
+
+For most teams the right starting point is a scraping API paired with BeautifulSoup. You get Cloudflare bypass handled for you, pagination is straightforward, and you can have a working pipeline in an afternoon. Playwright with residential proxies makes sense when you need JS-rendered fields like agent phone numbers or price history.
+
+The full guide covers all three approaches with production-ready code, common failure modes, and a breakdown of exactly which fields are available from search results versus property detail pages.
+
+scrapebadger.com

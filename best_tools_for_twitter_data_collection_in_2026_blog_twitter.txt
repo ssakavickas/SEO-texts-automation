@@ -1,0 +1,9 @@
+The Twitter API costs $42K/month at enterprise tier now.
+
+So teams moved on. A whole ecosystem replaced it.
+
+Some tools are solid. Some break the moment X changes anything.
+
+Here is how to actually pick the right one for your use case.
+
+Read the full guide: scrapebadger.com

@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <title>Blog Post Package</title>
+    
+<style>
+    body { 
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+        line-height: 1.6; 
+        max-width: 800px; 
+        margin: 40px auto; 
+        padding: 0 20px; 
+        color: #333; 
+    }
+    h1, h2, h3 { 
+        color: #111; 
+        margin-top: 1.5em; 
+        text-transform: uppercase; 
+        letter-spacing: 0.5px; 
+        border-bottom: 2px solid #2D6A4F;
+        padding-bottom: 5px;
+    }
+    pre { 
+        background-color: #1e1e1e; 
+        color: #d4d4d4; 
+        padding: 16px; 
+        border-radius: 6px; 
+        overflow-x: auto; 
+        font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace; 
+        font-size: 14px; 
+        margin: 20px 0;
+    }
+    code { 
+        font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace; 
+    }
+    p code {
+        background-color: #f6f8fa; 
+        padding: 0.2em 0.4em; 
+        border-radius: 3px; 
+        font-size: 85%;
+        color: #2D6A4F;
+    }
+    table {
+        border-collapse: collapse;
+        width: 100%;
+        margin: 20px 0;
+    }
+    th, td {
+        border: 1px solid #ddd;
+        padding: 12px;
+        text-align: left;
+    }
+    th {
+        background-color: #f8f9fa;
+    }
+</style>
+
+</head>
+<body>
+    <h1>Blog Post Package</h1>
+<h2>SEO Metadata</h2>
+<p>Primary Keyword: Twitter alert system
+Meta Title: How to Build a Twitter Alert System for Your Startup
+Meta Description: Learn how to build a real-time Twitter alert system using Filter Rules API. Monitor brand mentions, competitors, and leads before opportunities go cold.</p>
+<hr />
+<h2>LinkedIn Post</h2>
+<p>Most founders find out about critical Twitter conversations days too late. A mention, a competitor complaint, a buying signal — gone cold before you ever saw it.</p>
+<p>A real-time Twitter alert system solves this. Here is what you need to know to build one that actually works:</p>
+<ul>
+<li>Define tight, specific queries from day one. Broad queries create noise. Start narrow, then expand as you learn what is actually actionable.</li>
+<li>Use event-driven Filter Rules, not polling. Push-based alerts notify you the moment a match is detected — no scheduling, no delays, no missed windows.</li>
+<li>Route alerts to where your team already works. Slack, a database, or a CRM. The webhook handler is your integration point.</li>
+</ul>
+<p>Most startup teams overlook the highest-value signals: lead intent queries, competitor complaints, and market trend keywords. These are not just brand mentions — they are live buying signals with a short window to act.</p>
+<p>Read the full step-by-step guide: scrapebadger.com</p>
+<p>What signals are you currently monitoring for your startup, and how are you capturing them? Drop your setup in the comments.</p>
+<hr />
+<h2>Twitter Thread</h2>
+<p>Most founders see important Twitter mentions 3 days too late. Here is how to fix that.</p>
+<ul>
+<li>Use event-driven Filter Rules, not polling</li>
+<li>Route alerts to Slack or your DB via webhook</li>
+<li>Monitor lead intent, not just brand mentions</li>
+</ul>
+<p>Read the full guide: scrapebadger.com</p>
+<hr />
+<h2>Blog Cover Image</h2>
+<p><img alt="Cover Image" src="how_to_build_a_twitter_alert_system_for_your_start_blog_cover.png" /></p>
+<hr />
+<h1>How to Build a Twitter Alert System for Your Startup</h1>
+<p>Most founders find out about important Twitter conversations three days too late. Someone mentioned your product, asked a question your tool solves, or complained loudly about a competitor — and by the time you saw it, the thread was cold and the opportunity was gone.</p>
+<p>A Twitter alert system fixes this. It monitors the conversations you care about and notifies you the moment they happen, without you having to be logged in, searching, or paying attention. This guide shows you how to build one that actually works in production, using <a href="https://scrapebadger.com/docs/twitter-streams/filter-rules">ScrapeBadger's Filter Rules API</a> as the data layer.</p>
+<h2>What a Twitter Alert System Actually Does</h2>
+<p>The goal is simple: define a set of queries, run them continuously, and push matching tweets to wherever your team responds — Slack, email, a database, a webhook.</p>
+<p>In practice, there are two technical approaches to this:</p>
+<p><strong>Polling:</strong> Ask the API "any new tweets matching this query?" on a schedule. Simpler to set up, but introduces a delay equal to your polling interval.</p>
+<p><strong>Event-driven (Filter Rules):</strong> Register a rule once. The system runs the query continuously and pushes matching tweets to your endpoint the moment they're detected. No manual scheduling required.</p>
+<p>For alert systems where response time matters — brand mentions, PR signals, competitor announcements — Filter Rules are the right approach. Polling is fine for daily digests or background tracking where a 10–60 minute delay is acceptable.</p>
+<h2>Deciding What to Monitor</h2>
+<p>Before you write a line of code, define what you're actually tracking. The rule quality determines whether your alert system is useful or just noise.</p>
+<p>Most startup teams care about three categories:</p>
+<p><strong>Brand signals</strong> — your product name, your Twitter handle, common misspellings. These tell you who's talking about you and why.</p>
+<p><strong>Competitor signals</strong> — mentions of competitor names and keywords associated with their positioning. You want to know before a customer tells you.</p>
+<p><strong>Market signals</strong> — phrases that indicate buying intent or frustration with the status quo. "Anyone know a good tool for X?" or "Looking for alternatives to Y" are the tweets that surface leads.</p>
+<p>A note on query design: broad queries return noise. Tight queries miss things. Start with something like:</p>
+<pre><code>&quot;your-product-name&quot; -is:retweet lang:en
+</code></pre>
+<p>Then expand as you calibrate what's actually actionable. ScrapeBadger provides a <a href="https://scrapebadger.com/docs/twitter-streams/filter-rules">validate endpoint</a> that checks query syntax before you create a live rule — use it before committing.</p>
+<h2>Choosing a Polling Interval</h2>
+<p>Different signals have different urgency. ScrapeBadger's <a href="https://scrapebadger.com/docs/twitter-streams/filter-rules">Filter Rules</a> support five polling tiers:</p>
+<table>
+<thead>
+<tr>
+<th>Tier</th>
+<th>Poll Interval</th>
+<th>Credits/Rule/Day</th>
+<th>Best For</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Turbo</td>
+<td>0.5 seconds</td>
+<td>30,000</td>
+<td>Live events, active crisis monitoring</td>
+</tr>
+<tr>
+<td>Fast</td>
+<td>5 seconds</td>
+<td>10,000</td>
+<td>Product launch tracking</td>
+</tr>
+<tr>
+<td>Standard</td>
+<td>1 minute</td>
+<td>1,500</td>
+<td>Brand monitoring, B2B SaaS tracking</td>
+</tr>
+<tr>
+<td>Relaxed</td>
+<td>10 minutes</td>
+<td>500</td>
+<td>Market research, background tracking</td>
+</tr>
+<tr>
+<td>Daily</td>
+<td>24 hours</td>
+<td>100</td>
+<td>Weekly digest inputs</td>
+</tr>
+</tbody>
+</table>
+<p>For most startups, <span style="color: #2D6A4F; font-weight: bold;">Standard</span> is the right default. One-minute polling is near-real-time for most purposes, and at roughly $4.50 per rule per month, you can run several rules without meaningful cost.</p>
+<p>Reserve <span style="color: #2D6A4F; font-weight: bold;">Turbo</span> and <span style="color: #2D6A4F; font-weight: bold;">Fast</span> for specific situations — a product launch, a PR situation you know is developing, or a live event where your brand is active.</p>
+<h2>Step 1: Create a Filter Rule</h2>
+<p>Here's how to register a rule. This starts monitoring immediately:</p>
+<pre><code class="language-bash">curl -X POST &quot;https://scrapebadger.com/v1/twitter/filter-rules&quot; \
+  -H &quot;x-api-key: YOUR_API_KEY&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d '{
+    &quot;query&quot;: &quot;\&quot;your-product-name\&quot; -is:retweet lang:en&quot;,
+    &quot;tag&quot;: &quot;brand-monitor&quot;,
+    &quot;interval&quot;: &quot;standard&quot;,
+    &quot;webhook_url&quot;: &quot;https://your-app.com/webhooks/tweets&quot;
+  }'
+</code></pre>
+<p>The <code>tag</code> field is for your own reference — useful when you're managing multiple rules and want to route them differently downstream. Keep tags descriptive: <code>brand-monitor</code>, <code>competitor-x</code>, <code>lead-intent</code>.</p>
+<p>You can list, update, and delete rules via the same <a href="https://scrapebadger.com/docs/twitter-streams/filter-rules">Filter Rules API</a>. Up to 50 active rules per API key.</p>
+<h2>Step 2: Receive Tweets via Webhook</h2>
+<p>When a matching tweet is detected, ScrapeBadger sends an HTTP <code>POST</code> to your <code>webhook_url</code>. The payload looks like this:</p>
+<pre><code class="language-json">{
+  &quot;type&quot;: &quot;tweet&quot;,
+  &quot;monitor_id&quot;: &quot;mon-123&quot;,
+  &quot;tweet_id&quot;: &quot;1234567890123456789&quot;,
+  &quot;author_username&quot;: &quot;someuser&quot;,
+  &quot;tweet_published_at&quot;: &quot;2026-03-04T12:00:00Z&quot;,
+  &quot;detected_at&quot;: &quot;2026-03-04T12:00:00.850Z&quot;,
+  &quot;latency_ms&quot;: 850,
+  &quot;tweet&quot;: {
+    &quot;id&quot;: &quot;1234567890123456789&quot;,
+    &quot;text&quot;: &quot;Just switched from CompetitorX to YourProduct...&quot;,
+    &quot;created_at&quot;: &quot;Mon Mar 04 12:00:00 +0000 2026&quot;,
+    &quot;username&quot;: &quot;someuser&quot;,
+    &quot;favorite_count&quot;: 12,
+    &quot;retweet_count&quot;: 3,
+    &quot;reply_count&quot;: 1
+  }
+}
+</code></pre>
+<p>You have <span style="color: #2D6A4F; font-weight: bold;">10 seconds</span> to return a <code>2xx</code> response. If you don't, ScrapeBadger retries up to 3 times with exponential backoff. The <code>X-ScrapeBadger-Delivery-Id</code> header serves as an idempotency key — use it to prevent processing the same event twice.</p>
+<h2>Step 3: Verify Webhook Signatures</h2>
+<p>Don't skip this. Any public webhook endpoint will eventually get hit with garbage payloads. ScrapeBadger signs every request with HMAC-SHA256 via the <code>X-ScrapeBadger-Signature</code> header. Verify it before processing anything.</p>
+<p><strong>Python / Flask:</strong></p>
+<pre><code class="language-python">import hmac
+import hashlib
+from flask import Flask, request, abort
+
+app = Flask(__name__)
+WEBHOOK_SECRET = &quot;your_webhook_secret&quot;
+
+def verify_signature(body: bytes, signature: str, secret: str) -&gt; bool:
+    expected = hmac.new(secret.encode(), body, hashlib.sha256).hexdigest()
+    received = signature.replace(&quot;sha256=&quot;, &quot;&quot;)
+    return hmac.compare_digest(expected, received)
+
+@app.post(&quot;/webhooks/tweets&quot;)
+def handle_webhook():
+    signature = request.headers.get(&quot;X-ScrapeBadger-Signature&quot;, &quot;&quot;)
+    if not verify_signature(request.data, signature, WEBHOOK_SECRET):
+        abort(401)
+
+    data = request.json
+    tweet_text = data[&quot;tweet&quot;][&quot;text&quot;]
+    author = data[&quot;author_username&quot;]
+    tag = data.get(&quot;tag&quot;, &quot;unknown&quot;)
+
+    print(f&quot;[{tag}] New tweet from @{author}: {tweet_text[:100]}&quot;)
+    # Route to Slack, database, etc.
+    return &quot;OK&quot;, 200
+</code></pre>
+<p><strong>Node.js / Express:</strong></p>
+<pre><code class="language-javascript">import crypto from 'crypto';
+import express from 'express';
+
+const app = express();
+const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET;
+
+app.use(express.json());
+
+function verifySignature(body, signature, secret) {
+  const expected = crypto
+    .createHmac('sha256', secret)
+    .update(body)
+    .digest('hex');
+  const received = signature.replace('sha256=', '');
+  return crypto.timingSafeEqual(
+    Buffer.from(expected),
+    Buffer.from(received)
+  );
+}
+
+app.post('/webhooks/tweets', (req, res) =&gt; {
+  const signature = req.headers['x-scrapebadger-signature'];
+  const body = JSON.stringify(req.body);
+
+  if (!verifySignature(body, signature, WEBHOOK_SECRET)) {
+    return res.status(401).send('Invalid signature');
+  }
+
+  const { author_username, tweet, tag } = req.body;
+  console.log(`[${tag}] @${author_username}: ${tweet.text.slice(0, 100)}`);
+  // Send to Slack, store in DB, etc.
+  res.status(200).send('OK');
+});
+</code></pre>
+<h2>Step 4: Route Alerts Where Your Team Actually Looks</h2>
+<p>The webhook handler is the integration point. From here you can send the tweet data anywhere.</p>
+<p><strong>Slack (most common for small teams):</strong></p>
+<pre><code class="language-python">import requests
+
+SLACK_WEBHOOK = &quot;https://hooks.slack.com/services/YOUR/SLACK/WEBHOOK&quot;
+
+def send_slack_alert(tag: str, author: str, tweet_text: str, tweet_id: str):
+    tweet_url = f&quot;https://twitter.com/{author}/status/{tweet_id}&quot;
+    payload = {
+        &quot;text&quot;: f&quot;*[{tag}]* New mention from @{author}\n&gt;{tweet_text}\n&lt;{tweet_url}|View tweet&gt;&quot;
+    }
+    requests.post(SLACK_WEBHOOK, json=payload, timeout=5)
+</code></pre>
+<p>Call <code>send_slack_alert()</code> inside your webhook handler, passing data from the payload. Done.</p>
+<p>For routing multiple rules to different Slack channels, use the <code>tag</code> field: <code>brand-monitor</code> goes to <code>#brand-alerts</code>, <code>lead-intent</code> goes to <code>#sales</code>.</p>
+<p><strong>Database storage (for volume and history):</strong></p>
+<p>If you're tracking significant volume or want to run analysis on collected mentions, store everything in SQLite or Postgres. Use <code>tweet_id</code> as the primary key — it's stable and globally unique.</p>
+<pre><code class="language-python">import sqlite3
+
+def store_tweet(tweet_id: str, author: str, text: str, tag: str, detected_at: str):
+    con = sqlite3.connect(&quot;alerts.db&quot;)
+    try:
+        con.execute(&quot;&quot;&quot;
+            INSERT OR IGNORE INTO tweets
+            (tweet_id, author, text, tag, detected_at)
+            VALUES (?, ?, ?, ?, ?)
+        &quot;&quot;&quot;, (tweet_id, author, text, tag, detected_at))
+        con.commit()
+    finally:
+        con.close()
+</code></pre>
+<p><code>INSERT OR IGNORE</code> handles the idempotency case without extra logic.</p>
+<h2>Reducing Noise Before It Becomes a Problem</h2>
+<p>Alert fatigue is the most common failure mode. The system works, but the signal-to-noise ratio is so bad that people stop reading it.</p>
+<p>Fix this at the query level, not the consumer level. Filters applied at the rule reduce the volume of events you receive in the first place.</p>
+<table>
+<thead>
+<tr>
+<th>Problem</th>
+<th>Query Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Retweets cluttering the feed</td>
+<td>Add <code>-is:retweet</code></td>
+</tr>
+<tr>
+<td>Irrelevant language content</td>
+<td>Add <code>lang:en</code></td>
+</tr>
+<tr>
+<td>Spam and giveaways</td>
+<td>Add <code>-giveaway -contest -airdrop</code></td>
+</tr>
+<tr>
+<td>Low-quality mentions</td>
+<td>Add <code>min_faves:5</code></td>
+</tr>
+<tr>
+<td>Broad keyword catching everything</td>
+<td>Use exact-match quotes: <code>"your product"</code></td>
+</tr>
+</tbody>
+</table>
+<p>After two weeks of running a rule, look at what you actually acted on. If less than half the alerts were worth reading, tighten the query.</p>
+<h2>Deployment Considerations</h2>
+<p>A few things worth thinking through before you go live.</p>
+<p><strong>Separate API keys per environment.</strong> Dev, staging, and production should each have their own key. This prevents accidental filter rules from your local machine firing production alerts.</p>
+<p><strong>Your webhook endpoint needs to be public.</strong> If you're still developing locally, use a tool like <a href="https://ngrok.com">ngrok</a> to expose a local server for testing. ScrapeBadger also provides a test delivery endpoint in the <a href="https://scrapebadger.com/docs/twitter-streams/webhooks">webhook docs</a> if you want to trigger a mock payload.</p>
+<p><strong>Monitor the delivery logs.</strong> The <a href="https://scrapebadger.com/docs/twitter-streams/filter-rules">rule logs endpoint</a> (<code>GET /v1/twitter/filter-rules/{rule_id}/logs</code>) shows you what was detected, when, and whether delivery succeeded. Check this if you suspect tweets are being matched but not arriving at your endpoint.</p>
+<p><strong>Alert on silence.</strong> If a rule that normally fires 20 times a day suddenly goes quiet, that's worth investigating. Could be a query issue, a webhook delivery failure, or genuinely quiet conditions. Log the last delivery time per rule and alert if it exceeds your expected interval by a meaningful margin.</p>
+<p>If you're coming from a polling-based setup and want to understand the architecture tradeoffs in more depth, the post on <a href="https://scrapebadger.com/blog/how_to_build_a_real-time_twitter_monitoring_pipeli">how to build a real-time Twitter monitoring pipeline</a> covers the two approaches side-by-side.</p>
+<h2>What to Track Beyond Brand Mentions</h2>
+<p>Brand monitoring is the obvious starting point. But the same infrastructure supports several other high-value signals that most startup teams overlook.</p>
+<p><strong>Lead intent queries:</strong> Monitor phrases like <code>"looking for alternatives to [competitor]"</code> or <code>"any recommendations for [category]"</code>. These are people actively shopping. You have minutes to respond authentically before they move on.</p>
+<p><strong>Negative sentiment on competitors:</strong> Track complaints about products in your space. Not to pile on, but to understand what the market is dissatisfied with. This data informs positioning more reliably than most user research.</p>
+<p><strong>Industry trend signals:</strong> Monitor hashtags or keywords in your problem domain with a <code>min_faves:50</code> filter. High-engagement posts in your niche are worth knowing about quickly, whether or not they mention you directly.</p>
+<p>For a practical breakdown of how to use this kind of signal for acquisition, the post on <a href="https://scrapebadger.com/blog/how_startups_use_twitter_monitoring_for_lead_gener">how startups use Twitter monitoring for lead generation</a> is worth reading alongside this one.</p>
+<h2>FAQ</h2>
+<p><strong>What's the difference between a Twitter alert system and a scraping pipeline?</strong></p>
+<p>A scraping pipeline fetches data on a schedule — you ask "what happened in the last hour?" periodically. An alert system is event-driven — you define what you care about, and data gets pushed to you the moment it matches. For time-sensitive signals, the push model is significantly faster. For bulk historical collection or analysis, polling is more appropriate. The <a href="https://scrapebadger.com/blog/twitter_monitoring_vs_twitter_scraping_whats_the_d">Twitter Monitoring vs Twitter Scraping</a> post covers this distinction in more detail.</p>
+<p><strong>How many rules should I start with?</strong></p>
+<p>Start with three: one for your brand name, one for a high-intent competitor signal, and one for a broad market keyword. Run these for two weeks, check what you actually acted on, and expand from there. ScrapeBadger supports up to 50 active rules per API key, so you have room to grow without architectural changes.</p>
+<p><strong>What happens if my webhook endpoint is down when a tweet is detected?</strong></p>
+<p>ScrapeBadger retries failed deliveries up to 3 times with exponential backoff. If all retries fail, the event is logged. You can inspect delivery failures via the <a href="https://scrapebadger.com/docs/twitter-streams/filter-rules">rule logs endpoint</a> to see what was missed and when.</p>
+<p><strong>Can I use this without a public server by polling instead?</strong></p>
+<p>Yes. If you can't expose a webhook endpoint, you can omit <code>webhook_url</code> from the rule and use the logs endpoint to poll for matched tweets on a schedule. This is less immediate than webhook delivery but works fine if you're running a cron-based setup or building locally. Alternatively, expose a local server temporarily using ngrok during development.</p>
+<p><strong>How do I handle the same tweet arriving multiple times?</strong></p>
+<p>Use the <code>X-ScrapeBadger-Delivery-Id</code> header as an idempotency key. Store processed delivery IDs in a fast cache (Redis) or your database, and skip processing if the ID has already been seen. For SQLite, <code>INSERT OR IGNORE</code> on <code>tweet_id</code> handles the common case without extra logic.</p>
+<p><strong>How much does this cost for a typical startup alert setup?</strong></p>
+<p>A practical setup — say, 5 rules at Standard polling (1-minute interval) — costs around <span style="color: #2D6A4F; font-weight: bold;">1,500 credits per rule per day</span>, or roughly $22.50/month total at ScrapeBadger's credit</p>
+</body>
+</html>
