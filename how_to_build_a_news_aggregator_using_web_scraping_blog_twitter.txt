@@ -1,9 +1,0 @@
-Your news scraper works great.
-Until tomorrow, when the HTML changes.
-
-Build it as a pipeline, not a script.
-Fetch. Parse. Normalize. Deduplicate. Export.
-
-Each stage fails independently. That matters.
-
-Read the full guide: scrapebadger.com

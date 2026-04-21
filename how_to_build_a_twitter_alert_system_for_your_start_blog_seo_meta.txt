@@ -1,3 +1,0 @@
-Primary Keyword: Twitter alert system
-Meta Title: How to Build a Twitter Alert System for Your Startup
-Meta Description: Learn how to build a real-time Twitter alert system using Filter Rules API. Monitor brand mentions, competitors, and leads before opportunities go cold.

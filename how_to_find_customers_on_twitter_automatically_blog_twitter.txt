@@ -1,6 +1,0 @@
-People are tweeting their buying intent in real time.
-Most teams never see it because manual search doesn't scale.
-
-Build a pipeline that brings the signals to you automatically.
-
-Read the full guide: scrapebadger.com

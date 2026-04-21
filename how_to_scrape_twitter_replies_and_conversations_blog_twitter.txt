@@ -1,8 +1,0 @@
-Keyword scraping misses the best data on Twitter.
-
-Reply threads are where the real signal is.
-Complaints, opinions, word-of-mouth — all buried in conversations.
-
-Here is how to collect them properly.
-
-Read the full guide: scrapebadger.com

@@ -5,6 +5,10 @@ token.json
 anthropic_key.txt
 *_key.txt
 *.key
+test_*_key.py
+test_gemini_key.py
+test_imagen.py
+model_list.txt
 
 # Temporary and generated files
 .tmp/
@@ -14,19 +18,29 @@ __pycache__/
 *.pyd
 .db
 .ipynb_checkpoints
+*.html
+*.md
+*.csv
+*.json
+!README.md
+!MASTER_BLOG_BATCH_PACKAGE.md
+!AGENTS.md
+!CLAUDE.md
+!GEMINI.md
+!blog_pipeline_inputs.csv
+!blog_pipeline_inputs.json
+
+# If these are blog outputs, we should ignore them to keep the repo clean
+# (Assuming the user wants to publish the logic/tools, not 200+ blog files)
+*blog.html
+*blog.md
+*blog_CONSOLIDATED.html
+*blog_CONSOLIDATED.md
+*blog_linkedin.txt
+*blog_seo_meta.txt
+*blog_twitter.txt
+*blog_cover.png
 
 # OS files
 .DS_Store
 Thumbs.db
-
-# Virtual environments
-venv/
-env/
-.venv/
-
-# Large media (optional, but recommended for generated blog assets if they are many)
-# If these are permanent assets, comment the line below
-*.png
-*.jpg
-*.jpeg
-*.gif

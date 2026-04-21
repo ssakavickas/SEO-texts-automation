@@ -1,7 +1,0 @@
-Your Twitter data has a bot problem.
-Up to 20% of accounts are automated.
-That inflates follower counts, warps engagement, and poisons analysis.
-
-Detection is not optional if the numbers need to mean something.
-
-Read the full guide: scrapebadger.com

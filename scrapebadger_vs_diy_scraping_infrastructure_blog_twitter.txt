@@ -1,6 +1,0 @@
-Your scraper works today.
-Tomorrow it returns nothing, exits clean, and you find out in 5 days.
-
-That is the real cost of DIY scraping nobody budgets for.
-
-Read the full guide: scrapebadger.com

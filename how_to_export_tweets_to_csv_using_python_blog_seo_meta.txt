@@ -1,3 +1,0 @@
-Primary Keyword: export tweets to CSV Python
-Meta Title: How to Export Tweets to CSV Using Python
-Meta Description: Learn how to export tweets to CSV in Python with pagination, deduplication, and atomic writes. A complete guide for clean, reliable Twitter data exports.

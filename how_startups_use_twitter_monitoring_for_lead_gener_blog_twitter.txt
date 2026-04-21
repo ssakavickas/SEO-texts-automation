@@ -1,7 +1,0 @@
-Most B2B teams broadcast on Twitter. The ones winning use it to listen.
-
-- Public tweets reveal buying intent in real time
-- Boolean filters cut noise before it wastes your time
-- Webhook alerts let you respond within minutes, not hours
-
-Read the full guide: scrapebadger.com

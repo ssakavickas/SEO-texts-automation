@@ -1,6 +1,0 @@
-A price scraper fetches prices.
-A price tracking bot fetches, stores, detects drops, and alerts you.
-
-Most tutorials build the first and call it the second.
-
-Read the full guide: scrapebadger.com

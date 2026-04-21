@@ -1,7 +1,0 @@
-Real-time monitoring sounds better.
-Batch scraping sounds boring.
-So teams overspend on infrastructure they do not need.
-
-The only question that matters: what does it cost you if data arrives an hour late?
-
-Read the full guide: scrapebadger.com

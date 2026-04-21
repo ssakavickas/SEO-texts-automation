@@ -1,7 +1,0 @@
-Most tweet export scripts break the moment you scale them.
-
-- Pagination gaps silently drop half your data
-- Nested fields crash without safe defaults
-- No atomic writes means corrupt CSVs on failure
-
-Read the full guide: scrapebadger.com

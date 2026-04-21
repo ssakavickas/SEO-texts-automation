@@ -1,3 +1,0 @@
-Primary Keyword: detecting twitter bots
-Meta Title: Detecting Twitter Bots: Signals, Tools & Methods
-Meta Description: Detecting Twitter bots is harder than it looks. Learn the key signals, top tools, and Python methods to filter bots from your data pipeline effectively.

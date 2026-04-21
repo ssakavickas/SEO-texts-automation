@@ -1,3 +1,0 @@
-Primary Keyword: real-time Twitter monitoring pipeline
-Meta Title: How to Build a Real-Time Twitter Monitoring Pipeline
-Meta Description: Learn how to build a real-time Twitter monitoring pipeline using Filter Rules and WebSocket streaming to detect matching tweets within milliseconds, not minutes.

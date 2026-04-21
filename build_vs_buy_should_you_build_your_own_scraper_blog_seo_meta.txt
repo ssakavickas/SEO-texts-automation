@@ -1,3 +1,0 @@
-Primary Keyword: twitter scraper
-Meta Title: Build vs. Buy: Should You Build a Twitter Scraper?
-Meta Description: Thinking of building your own Twitter scraper? Compare real costs, maintenance risks, and when buying a managed API saves your team time and money.

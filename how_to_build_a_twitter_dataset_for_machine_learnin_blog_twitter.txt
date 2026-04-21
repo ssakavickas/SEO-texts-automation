@@ -1,7 +1,0 @@
-Bad training data does not crash your script.
-It just makes your model quietly wrong.
-
-Most Twitter datasets fail before the model ever runs.
-Here is how to build one that actually holds up.
-
-Read the full guide: scrapebadger.com

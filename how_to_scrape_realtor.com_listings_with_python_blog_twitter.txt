@@ -1,5 +1,0 @@
-Realtor.com blocks plain requests before you see a single listing.
-
-The fix is not obvious. Here is what actually works.
-
-Read the full guide: scrapebadger.com

@@ -1,3 +1,0 @@
-Primary Keyword: track competitors on Twitter
-Meta Title: How to Track Competitors on Twitter Automatically
-Meta Description: Learn how to track competitors on Twitter automatically using Stream Monitors, webhooks, and engagement APIs. Stop missing key signals and start acting on real data.

@@ -1,7 +1,0 @@
-"We just need a Python script."
-
-Six months later: 2am proxy failures, silent data gaps, and a slipped roadmap.
-
-Building a Twitter scraper costs more than you think.
-
-Read the full guide: scrapebadger.com

@@ -1,7 +1,0 @@
-Most "Twitter monitoring" setups are just slow scrapers in disguise.
-
-- Scraping = pull model, on-demand, best for historical data
-- Monitoring = push model, continuous, built for real-time alerts
-- Wrong choice means blind spots between runs
-
-Read the full guide: scrapebadger.com

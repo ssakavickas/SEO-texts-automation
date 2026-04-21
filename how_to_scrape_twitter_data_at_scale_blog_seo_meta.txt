@@ -1,3 +1,0 @@
-Primary Keyword: Scrape Twitter Data
-Meta Title: How to Scrape Twitter Data at Scale
-Meta Description: Learn how to scrape Twitter data reliably at scale. This guide covers pagination, normalization, deduplication, and building pipelines that run unattended.

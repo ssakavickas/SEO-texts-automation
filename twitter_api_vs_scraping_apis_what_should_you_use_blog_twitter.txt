@@ -1,8 +1,0 @@
-The Twitter API costs $5,000/month for real access now.
-
-Most teams aren't evaluating it anymore.
-They're evaluating which scraping API fits their pipeline.
-
-Here's what actually separates them:
-
-Read the full guide: scrapebadger.com

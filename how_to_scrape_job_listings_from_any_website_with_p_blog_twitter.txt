@@ -1,8 +1,0 @@
-Most job scrapers break quietly.
-No errors. Just empty CSVs.
-
-Wrong selectors, JS-rendered pages, silent duplicates.
-
-Here is how to build one that actually holds up.
-
-Read the full guide: scrapebadger.com
