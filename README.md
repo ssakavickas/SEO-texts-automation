@@ -1,4 +1,4 @@
-# 🤖 Domo Workflow - AI Content Automation Pipeline
+# 🤖  AI Content Automation Pipeline
 
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
 ![Status: Production Ready](https://img.shields.io/badge/Status-Production--Ready-brightgreen)
